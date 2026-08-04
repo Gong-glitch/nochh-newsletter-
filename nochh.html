@@ -1,0 +1,558 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NOCHH NIEUWS - Generator</title>
+    
+    <!-- Dependencies for PDF Rendering -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
+    <style>
+        * { box-sizing: border-box; }
+        
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #eef2f5;
+            margin: 0;
+            padding: 15px;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        /* Desktop Layout: 30% Left, 70% Right */
+        @media (min-width: 600px) {
+            body {
+                flex-direction: row;
+                align-items: flex-start;
+            }
+            .form-panel {
+                flex: 0 0 30%;
+                max-width: 30%;
+                max-height: 95vh;
+                position: sticky;
+                top: 15px;
+            }
+            .preview-panel {
+                flex: 0 0 70%;
+                max-width: 70%;
+            }
+        }
+
+        /* Form Panel Styling */
+        .form-panel {
+            width: 100%;
+            background: #ffffff;
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+            overflow-y: auto;
+        }
+
+        .form-panel h2 {
+            margin-top: 0;
+            color: #d32f2f;
+            border-bottom: 2px solid #d32f2f;
+            padding-bottom: 4px;
+            font-size: 16px;
+        }
+
+        .section-title {
+            font-size: 11px;
+            font-weight: bold;
+            color: #d32f2f;
+            text-transform: uppercase;
+            margin-top: 12px;
+            margin-bottom: 6px;
+            border-bottom: 1px dashed #ccc;
+        }
+
+        .form-group {
+            margin-bottom: 8px;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 11px;
+            font-weight: bold;
+            color: #444;
+            margin-bottom: 2px;
+        }
+
+        .form-group input, .form-group textarea {
+            width: 100%;
+            padding: 6px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-family: inherit;
+            font-size: 12px;
+        }
+
+        .btn-group {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            margin-top: 12px;
+        }
+
+        .pdf-btn {
+            background-color: #d32f2f;
+            color: white;
+            padding: 99px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 13px;
+            width: 100%;
+            font-weight: bold;
+            padding: 9px;
+        }
+
+        .print-btn {
+            background-color: #555;
+            color: white;
+            padding: 9px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 13px;
+            width: 100%;
+            font-weight: bold;
+        }
+
+        .pdf-btn:hover { background-color: #b71c1c; }
+        .print-btn:hover { background-color: #333; }
+
+        /* Preview Container */
+        .preview-panel {
+            width: 100%;
+            background: transparent;
+            padding: 0;
+        }
+
+        /* Strict A4 Page Dimensions */
+        .page {
+            width: 210mm;
+            height: 297mm;
+            background: #fff;
+            padding: 15mm;
+            margin: 0 auto 25px auto;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+            border: 1px solid #ccc;
+            box-sizing: border-box;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .header-box {
+            background-color: #d32f2f;
+            color: white;
+            padding: 14px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .header-box h1 { margin: 0; font-size: 22px; }
+        .header-box p { margin: 0; font-size: 13px; }
+
+        .meta-bar {
+            background-color: #f5f5f5;
+            padding: 8px 14px;
+            font-weight: bold;
+            font-size: 12px;
+            margin-top: 6px;
+            margin-bottom: 16px;
+            border-left: 4px solid #d32f2f;
+        }
+
+        .grid-2 { 
+            display: grid; 
+            grid-template-columns: 1fr 1fr; 
+            gap: 12px; 
+        }
+        
+        .box {
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            padding: 12px;
+            margin-bottom: 12px;
+            background: #fafafa;
+        }
+
+        .box-title {
+            font-size: 11px;
+            font-weight: bold;
+            color: #d32f2f;
+            text-transform: uppercase;
+            margin-bottom: 4px;
+        }
+
+        .box-content {
+            font-size: 12px;
+            line-height: 1.4;
+            white-space: pre-wrap;
+            word-break: break-word;
+        }
+
+        /* IMAGE STRETCH FIX */
+        .img-container {
+            width: 100%;
+            max-height: 180px;
+            background-color: #f0f0f0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #666;
+            font-size: 11px;
+            border: 1px dashed #999;
+            overflow: hidden;
+            border-radius: 4px;
+            margin-top: 5px;
+            padding: 4px;
+        }
+
+        .img-container.header-img {
+            max-height: 220px;
+        }
+
+        .img-container img {
+            max-width: 100%;
+            max-height: 100%;
+            width: auto;
+            height: auto;
+            object-fit: contain;
+            display: none;
+            margin: auto;
+        }
+
+        @media print {
+            body { background: white; padding: 0; display: block; }
+            .form-panel { display: none; }
+            .preview-panel { width: 100%; max-width: 100%; }
+            .page { border: none; box-shadow: none; margin: 0; page-break-after: always; width: 210mm; height: 297mm; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- LEFT SIDE: EDITING FORM (30% WIDTH) -->
+    <div class="form-panel">
+        <h2>NOCHH Content</h2>
+
+        <!-- PAGINA 1 -->
+        <div class="section-title">PAGINA 1</div>
+        <div class="form-group">
+            <label>Pagina 1 Header Text:</label>
+            <input type="text" id="inMeta1" value="UITGAVE NR 1  |  AUGUSTUS 2026" oninput="update()">
+        </div>
+        <div class="form-group">
+            <label>Hoofdafbeelding:</label>
+            <input type="file" accept="image/*" onchange="previewImage(this, 'imgMain')">
+        </div>
+        <div class="form-group">
+            <label>Feest:</label>
+            <textarea id="inFeest" rows="2" placeholder="Vul hier tekst in..." oninput="update()"></textarea>
+        </div>
+        <div class="form-group">
+            <label>Wist je dat?:</label>
+            <textarea id="inWistJeDat" rows="2" placeholder="Vul hier tekst in..." oninput="update()"></textarea>
+        </div>
+        <div class="form-group">
+            <label>Nieuws (Titel/Bericht):</label>
+            <input type="text" id="inNieuwsTitle" value="Tot ziens Joris, welkom An!" oninput="update()">
+            <textarea id="inNieuws" rows="2" placeholder="Nieuwsbericht..." oninput="update()" style="margin-top:4px;"></textarea>
+        </div>
+        <div class="form-group">
+            <label>De Anecdote:</label>
+            <textarea id="inAnecdote" rows="3" oninput="update()">Twee collega’s, die het deskundig advies inriepen van een andere collega hoe je een betonschaar nu moet gebruiken om succesvol een slot te verwijderen. Zo gezegd, zo gedaan. Vol goede moed trokken ze samen naar een brievenbus (bewoner had het centrum verlaten) om het slot te verwijderen. Niet te geloven, alle stappen gevolgd en waarachtig: het slot sprong open. Het had een succesverhaal kunnen worden, ware het niet dat ze toen ontdekten dat ze de verkeerde brievenbus ontdaan hadden van een slot…</textarea>
+        </div>
+
+        <!-- PAGINA 2 -->
+        <div class="section-title">PAGINA 2</div>
+        <div class="form-group">
+            <label>Pagina 2 Header Text:</label>
+            <input type="text" id="inMeta2" value="UITGAVE NR 1  |  AUGUSTUS 2026" oninput="update()">
+        </div>
+        <div class="form-group">
+            <label>Activiteit in de kijker:</label>
+            <textarea id="inAct" rows="2" placeholder="Vul hier de activiteit in..." oninput="update()"></textarea>
+        </div>
+        <div class="form-group">
+            <label>Foto Activiteit:</label>
+            <input type="file" accept="image/*" onchange="previewImage(this, 'imgAct')">
+        </div>
+        <div class="form-group">
+            <label>Dingetje van de maand:</label>
+            <textarea id="inDingetje" rows="3" oninput="update()">“Het erkennen van mekaars aanwezigheid wanneer men mekaar begroet” schept wederzijds respect, geeft aan dat je beleefd bent tegen mekaar en mekaar respecteert. Het zorgt voor een moment van verbinding.
+Goedemorgen, goedemiddag, goedenavond, goedendag, ….zijn basiswoorden en waarden die drempelverlagend werkt om bijvoorbeeld tot een gesprek te komen of een vertrouwensband op te bouwen. Deze maand willen we hierop extra inzetten.
+Spreek mekaar erop aan, zowel bewoners als personeel.</textarea>
+            <input type="text" id="inAuthors" value="- Eddy, Kelly, Mustapha, Brecht" oninput="update()" style="margin-top:4px;">
+        </div>
+        <div class="form-group">
+            <label>Foto Banner Dingetje:</label>
+            <input type="file" accept="image/*" onchange="previewImage(this, 'imgDingetjeBanner')">
+        </div>
+        <div class="form-group">
+            <label>Mens achter de badge:</label>
+            <textarea id="inBadge" rows="2" placeholder="Vul hier de tekst over de medewerker in..." oninput="update()"></textarea>
+        </div>
+        <div class="form-group">
+            <label>Foto Medewerker:</label>
+            <input type="file" accept="image/*" onchange="previewImage(this, 'imgBadge')">
+        </div>
+
+        <!-- PAGINA 3 -->
+        <div class="section-title">PAGINA 3</div>
+        <div class="form-group">
+            <label>Pagina 3 Header Text:</label>
+            <input type="text" id="inMeta3" value="UITGAVE NR 1  |  AUGUSTUS 2026" oninput="update()">
+        </div>
+        <div class="form-group">
+            <label>Agenda van de maand:</label>
+            <textarea id="inAgenda" rows="2" placeholder="Vul hier agenda-items in..." oninput="update()"></textarea>
+        </div>
+        <div class="form-group">
+            <label>Grondbeginsel Rode Kruis:</label>
+            <textarea id="inRodeKruis" rows="2" placeholder="Vul hier de kernwaarde in..." oninput="update()"></textarea>
+        </div>
+        <div class="form-group">
+            <label>Uit de oude doos:</label>
+            <textarea id="inOudeDoos" rows="2" placeholder="Vul hier tekst in..." oninput="update()"></textarea>
+        </div>
+        <div class="form-group">
+            <label>Foto Uit De Oude Doos:</label>
+            <input type="file" accept="image/*" onchange="previewImage(this, 'imgOudeDoos')">
+        </div>
+        <div class="form-group">
+            <label>Goede afspraken:</label>
+            <textarea id="inAfspraken" rows="2" placeholder="Vul hier afspraken in..." oninput="update()"></textarea>
+        </div>
+        <div class="form-group">
+            <label>Redactie Contact:</label>
+            <input type="text" id="inContact" value="Lauretta, Stefanie, Joris V of Michel" oninput="update()">
+        </div>
+
+        <div class="btn-group">
+            <button class="pdf-btn" onclick="exportToPDF()">Download PDF</button>
+            <button class="print-btn" onclick="window.print()">Print</button>
+        </div>
+    </div>
+
+    <!-- RIGHT SIDE: 3-PAGE PREVIEW (70% WIDTH) -->
+    <div class="preview-panel" id="newsletterDocument">
+        
+        <!-- PAGE 1 -->
+        <div class="page">
+            <div class="header-box">
+                <h1>NOCHH NIEUWS</h1>
+                <p>Samen op de hoogte, samen vooruit.</p>
+            </div>
+            <div class="meta-bar" id="outMeta1">UITGAVE NR 1  |  AUGUSTUS 2026</div>
+
+            <div class="img-container header-img" style="margin-bottom: 12px;">
+                <span>[ HOOFDAFBEELDING / CENTRUM ]</span>
+                <img id="imgMain" alt="Main Header Image">
+            </div>
+
+            <div class="grid-2">
+                <div class="box">
+                    <div class="box-title">FEEST</div>
+                    <div class="box-content" id="outFeest">---</div>
+                </div>
+                <div class="box">
+                    <div class="box-title">WIST JE DAT?</div>
+                    <div class="box-content" id="outWistJeDat">---</div>
+                </div>
+            </div>
+
+            <div class="box">
+                <div class="box-title">NIEUWS: <span id="outNieuwsTitle">---</span></div>
+                <div class="box-content" id="outNieuws">---</div>
+            </div>
+
+            <div class="box" style="border-left: 4px solid #d32f2f;">
+                <div class="box-title">DE ANECDOTE</div>
+                <div class="box-content" id="outAnecdote">---</div>
+            </div>
+        </div>
+
+        <!-- PAGE 2 -->
+        <div class="page">
+            <div class="meta-bar" id="outMeta2">UITGAVE NR 1  |  AUGUSTUS 2026</div>
+
+            <div class="grid-2">
+                <div class="box">
+                    <div class="box-title">ACTIVITEIT IN DE KIJKER</div>
+                    <div class="box-content" id="outAct">---</div>
+                </div>
+                <div class="box">
+                    <div class="box-title">FOTO VAN ACTIVITEIT</div>
+                    <div class="img-container">
+                        <span>[ FOTO VAN ACTIVITEIT ]</span>
+                        <img id="imgAct" alt="Activity Photo">
+                    </div>
+                </div>
+            </div>
+
+            <div class="box" style="border-left: 4px solid #d32f2f;">
+                <div class="box-title">DINGETJE VAN DE MAAND</div>
+                <div class="box-content" id="outDingetje">---</div>
+                <div class="box-content" id="outAuthors" style="font-weight: bold; margin-top: 4px; color: #555;">---</div>
+                <div class="img-container" style="max-height: 120px; margin-top: 8px;">
+                    <span>[ BANNER DINGETJE VAN DE MAAND ]</span>
+                    <img id="imgDingetjeBanner" alt="Dingetje Banner">
+                </div>
+            </div>
+
+            <div class="grid-2">
+                <div class="box">
+                    <div class="box-title">MENS ACHTER DE BADGE</div>
+                    <div class="box-content" id="outBadge">---</div>
+                </div>
+                <div class="box">
+                    <div class="box-title">FOTO MEDEWERKER</div>
+                    <div class="img-container">
+                        <span>[ FOTO MEDEWERKER ]</span>
+                        <img id="imgBadge" alt="Badge Photo">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- PAGE 3 -->
+        <div class="page">
+            <div class="meta-bar" id="outMeta3">UITGAVE NR 1  |  AUGUSTUS 2026</div>
+
+            <div class="box">
+                <div class="box-title">AGENDA VAN DE MAAND</div>
+                <div class="box-content" id="outAgenda">---</div>
+            </div>
+
+            <div class="box">
+                <div class="box-title">GRONDBEGINSEL / KERNWAARDE VAN HET RODE KRUIS</div>
+                <div class="box-content" id="outRodeKruis">---</div>
+            </div>
+
+            <div class="grid-2">
+                <div class="box">
+                    <div class="box-title">UIT DE OUDE DOOS</div>
+                    <div class="box-content" id="outOudeDoos">---</div>
+                </div>
+                <div class="box">
+                    <div class="box-title">FOTO UIT DE OUDE DOOS</div>
+                    <div class="img-container">
+                        <span>[ FOTO UIT DE OUDE DOOS ]</span>
+                        <img id="imgOudeDoos" alt="Old Photo">
+                    </div>
+                </div>
+            </div>
+
+            <div class="box">
+                <div class="box-title">GOEDE AFSPRAKEN, GOEDE VRIENDEN</div>
+                <div class="box-content" id="outAfspraken">---</div>
+            </div>
+
+            <div class="box" style="background-color: #f0f4f8;">
+                <div class="box-title">VRAGEN, SUGGESTIES, OPMERKINGEN?</div>
+                <div class="box-content">
+                    Contacteer het redactie team: <b id="outContact">---</b><br>
+                    <i>Of laat een berichtje achter in de suggestie box in het teamlokaal.</i>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- JavaScript Functions -->
+    <script>
+        function update() {
+            document.getElementById('outMeta1').innerText = document.getElementById('inMeta1').value || '---';
+            document.getElementById('outMeta2').innerText = document.getElementById('inMeta2').value || '---';
+            document.getElementById('outMeta3').innerText = document.getElementById('inMeta3').value || '---';
+
+            document.getElementById('outFeest').innerText = document.getElementById('inFeest').value || '---';
+            document.getElementById('outWistJeDat').innerText = document.getElementById('inWistJeDat').value || '---';
+            document.getElementById('outNieuwsTitle').innerText = document.getElementById('inNieuwsTitle').value || '---';
+            document.getElementById('outNieuws').innerText = document.getElementById('inNieuws').value || '---';
+            document.getElementById('outAnecdote').innerText = document.getElementById('inAnecdote').value || '---';
+
+            document.getElementById('outAct').innerText = document.getElementById('inAct').value || '---';
+            document.getElementById('outDingetje').innerText = document.getElementById('inDingetje').value || '---';
+            document.getElementById('outAuthors').innerText = document.getElementById('inAuthors').value || '---';
+            document.getElementById('outBadge').innerText = document.getElementById('inBadge').value || '---';
+
+            document.getElementById('outAgenda').innerText = document.getElementById('inAgenda').value || '---';
+            document.getElementById('outRodeKruis').innerText = document.getElementById('inRodeKruis').value || '---';
+            document.getElementById('outOudeDoos').innerText = document.getElementById('inOudeDoos').value || '---';
+            document.getElementById('outAfspraken').innerText = document.getElementById('inAfspraken').value || '---';
+            document.getElementById('outContact').innerText = document.getElementById('inContact').value || '---';
+        }
+
+        function previewImage(input, imgElementId) {
+            const file = input.files[0];
+            const imgElement = document.getElementById(imgElementId);
+            const placeholder = imgElement.previousElementSibling;
+            const container = imgElement.parentElement;
+
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    imgElement.src = e.target.result;
+                    imgElement.style.display = 'block';
+                    container.style.backgroundColor = 'transparent';
+                    container.style.border = 'none';
+                    if (placeholder) placeholder.style.display = 'none';
+                }
+                reader.readAsDataURL(file);
+            }
+        }
+
+        async function exportToPDF() {
+            const { jsPDF } = window.jspdf;
+            const pdf = new jsPDF('p', 'mm', 'a4');
+            const pages = document.querySelectorAll('.page');
+
+            for (let i = 0; i < pages.length; i++) {
+                const page = pages[i];
+                
+                const origBoxShadow = page.style.boxShadow;
+                const origBorder = page.style.border;
+                const origMargin = page.style.margin;
+                
+                page.style.boxShadow = 'none';
+                page.style.border = 'none';
+                page.style.margin = '0';
+
+                const canvas = await html2canvas(page, {
+                    scale: 2,
+                    useCORS: true,
+                    logging: false
+                });
+
+                page.style.boxShadow = origBoxShadow;
+                page.style.border = origBorder;
+                page.style.margin = origMargin;
+
+                const imgData = canvas.toDataURL('image/jpeg', 0.98);
+                
+                if (i > 0) {
+                    pdf.addPage('a4', 'p');
+                }
+                
+                pdf.addImage(imgData, 'JPEG', 0, 0, 210, 297);
+            }
+
+            pdf.save('NOCHH_Nieuws.pdf');
+        }
+
+        update();
+    </script>
+
+</body>
+</html>
