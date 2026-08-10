@@ -95,6 +95,36 @@
             background-color: #fff;
         }
 
+        /* Toggle Checkbox Row Styling */
+        .toggle-group {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 4px;
+        }
+
+        .toggle-group label {
+            font-size: 11px;
+            font-weight: bold;
+            color: #444;
+            margin: 0;
+        }
+
+        .toggle-switch-label {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            cursor: pointer;
+            font-size: 11px;
+            color: #d32f2f;
+            font-weight: bold;
+        }
+
+        .toggle-switch-label input[type="checkbox"] {
+            width: auto;
+            cursor: pointer;
+        }
+
         /* File input row with inline delete X button */
         .file-input-group {
             display: flex;
@@ -192,9 +222,9 @@
             flex-direction: column;
             justify-content: center;
             align-items: flex-start;
+            flex-shrink: 0;
         }
 
-        /* BIGGER NOCHH NIEUWS TITLE */
         .header-box h1 { 
             margin: 0; 
             font-size: 32px; 
@@ -218,12 +248,18 @@
             margin-top: 5px;
             margin-bottom: 8px;
             border-left: 4px solid #d32f2f;
+            flex-shrink: 0;
         }
 
         .grid-2 { 
             display: grid; 
             grid-template-columns: 1fr 1fr; 
             gap: 10px; 
+            flex-shrink: 0;
+        }
+
+        .grid-2.single-col {
+            grid-template-columns: 1fr !important;
         }
         
         .box {
@@ -232,6 +268,14 @@
             padding: 8px 12px;
             margin-bottom: 8px;
             background: #fafafa;
+            overflow: hidden;
+        }
+
+        .box.news-box {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            min-height: 0;
         }
 
         .box.wist-je-dat-box {
@@ -243,12 +287,26 @@
             background-color: #f7f9fa;
         }
 
+        /* PAGE 2: LIGHT YELLOW BACKGROUND FOR DINGETJE VAN DE MAAND */
+        .box.dingetje-box {
+            background-color: #fffde7;
+            border-color: #fff59d;
+        }
+
+        /* PAGE 3: LIGHT RED BACKGROUND & CENTERED TEXT FOR GRONDBEGINSEL */
+        .box.rode-kruis-box {
+            background-color: #f9ecee;
+            border-color: #e2b6bc;
+            text-align: center;
+        }
+
         .box-title {
             font-size: 15px;
             font-weight: bold;
             color: #d32f2f;
             text-transform: uppercase;
             margin-bottom: 4px;
+            flex-shrink: 0;
         }
 
         .box-content {
@@ -256,17 +314,23 @@
             line-height: 1.4;
             white-space: pre-wrap;
             word-break: break-word;
+            overflow-y: hidden;
+        }
+
+        .box.news-box .box-content.news-text {
+            flex: 1;
+            overflow-y: hidden;
         }
 
         .box-content.anecdote-text {
-            font-size: 14.5px;
-            line-height: 1.45;
+            font-size: 12.5px;
+            line-height: 1.3;
         }
 
-        /* IMAGE CONTAINERS */
+        /* STRICT IMAGE CONTAINER SIZING - NO SHRINKING */
         .img-container {
             width: 100%;
-            height: 160px;
+            height: 150px;
             background-color: #f0f0f0;
             display: flex;
             align-items: center;
@@ -278,10 +342,16 @@
             border-radius: 4px;
             padding: 0;
             position: relative;
+            flex-shrink: 0 !important;
         }
 
+        /* RIGID SIZING FOR MAIN HEADER PICTURE */
         .img-container.header-img {
-            height: 220px !important;
+            width: 100% !important;
+            height: 180px !important;
+            min-height: 180px !important;
+            max-height: 180px !important;
+            flex-shrink: 0 !important;
             border: none;
             background-color: transparent;
             margin-bottom: 8px;
@@ -294,10 +364,10 @@
             border-radius: 4px;
         }
 
-        /* INCREASED HEIGHT FOR EXTRA FOTO 1 & 2 (MATCHING ACTIVITEIT) */
         .grid-middle-photos {
-            height: 180px !important;
+            height: 140px !important;
             margin-bottom: 8px;
+            flex-shrink: 0 !important;
         }
 
         /* PAGE 2 LAYOUT */
@@ -305,46 +375,73 @@
             display: grid;
             grid-template-columns: 60% 38%;
             gap: 2%;
+            flex-shrink: 0;
+            margin-bottom: 8px;
         }
 
         .grid-page2-custom-photo {
             display: grid;
-            grid-template-columns: 60% 28%;
+            grid-template-columns: 60% 38%;
             gap: 2%;
+            flex-shrink: 0;
+            margin-bottom: 8px;
+        }
+
+        .grid-page2-badge-swapped {
+            display: grid;
+            grid-template-columns: 38% 60%;
+            gap: 2%;
+            flex-shrink: 0;
+            margin-bottom: 8px;
+        }
+
+        .grid-page2-standard.single-col,
+        .grid-page2-custom-photo.single-col,
+        .grid-page2-badge-swapped.single-col {
+            grid-template-columns: 1fr !important;
         }
 
         #containerAct {
-            height: 180px !important;
+            height: 160px !important;
+            flex-shrink: 0 !important;
         }
 
         #containerBadge {
-            height: 160px !important;
+            height: 150px !important;
+            flex-shrink: 0 !important;
         }
 
         #containerDingetjePhoto {
-            height: 240px !important;
+            height: 230px !important;
+            flex-shrink: 0 !important;
         }
 
         #containerOudeDoos {
-            height: 180px !important;
+            height: 160px !important;
+            flex-shrink: 0 !important;
         }
 
         /* Footer Box Styling */
         .contact-box {
             background-color: #f0f4f8;
-            padding: 4px 10px;
+            padding: 6px 10px;
             margin-top: auto;
             margin-bottom: 0;
+            text-align: center;
+            flex-shrink: 0;
         }
 
         .contact-box .box-title {
             font-size: 12px;
             margin-bottom: 2px;
+            text-align: center;
         }
 
         .contact-box .box-content {
             font-size: 11.5px;
-            line-height: 1.25;
+            line-height: 1.35;
+            text-align: center;
+            white-space: normal; /* Prevents HTML indentation spaces from messing up centering */
         }
 
         /* CROPPER MODAL STYLING */
@@ -441,48 +538,63 @@
             <input type="text" id="inMeta1" value="UITGAVE NR 1  |  AUGUSTUS 2026" oninput="update()">
         </div>
         <div class="form-group">
-            <label>Hoofdafbeelding(en):</label>
+            <div class="toggle-group">
+                <label>Hoofdafbeelding(en):</label>
+                <label class="toggle-switch-label"><input type="checkbox" id="toggleMainImg" checked onchange="update()"> Tone / Toon</label>
+            </div>
             <div class="file-input-group">
                 <input type="file" id="inputMain" accept="image/*" onchange="openCropModal(this, 'containerMain')">
                 <button class="file-delete-btn" onclick="clearFileInput('inputMain', 'containerMain', true)" title="Wis gekozen bestand">&times;</button>
             </div>
         </div>
         <div class="form-group">
-            <label>Feest:</label>
+            <div class="toggle-group">
+                <label>Feest:</label>
+                <label class="toggle-switch-label"><input type="checkbox" id="toggleFeest" checked onchange="update()"> Tone / Toon</label>
+            </div>
             <textarea id="inFeest" rows="2" placeholder="Vul hier tekst in..." oninput="update()"></textarea>
         </div>
         <div class="form-group">
-            <label>Wist je dat?:</label>
+            <div class="toggle-group">
+                <label>Wist je dat?:</label>
+                <label class="toggle-switch-label"><input type="checkbox" id="toggleWistJeDat" checked onchange="update()"> Tone / Toon</label>
+            </div>
             <textarea id="inWistJeDat" rows="2" placeholder="Vul hier tekst in..." oninput="update()"></textarea>
         </div>
         <div class="form-group">
-            <label>Extra Foto 1 (Midden Links):</label>
+            <div class="toggle-group">
+                <label>Extra Foto 1 (Midden Links):</label>
+                <label class="toggle-switch-label"><input type="checkbox" id="toggleMidPhoto1" checked onchange="update()"> Tone / Toon</label>
+            </div>
             <div class="file-input-group">
                 <input type="file" id="inputMid1" accept="image/*" onchange="openCropModal(this, 'containerMidPhoto1')">
                 <button class="file-delete-btn" onclick="clearFileInput('inputMid1', 'containerMidPhoto1')" title="Wis gekozen bestand">&times;</button>
             </div>
         </div>
         <div class="form-group">
-            <label>Extra Foto 2 (Midden Rechts):</label>
+            <div class="toggle-group">
+                <label>Extra Foto 2 (Midden Rechts):</label>
+                <label class="toggle-switch-label"><input type="checkbox" id="toggleMidPhoto2" checked onchange="update()"> Tone / Toon</label>
+            </div>
             <div class="file-input-group">
                 <input type="file" id="inputMid2" accept="image/*" onchange="openCropModal(this, 'containerMidPhoto2')">
                 <button class="file-delete-btn" onclick="clearFileInput('inputMid2', 'containerMidPhoto2')" title="Wis gekozen bestand">&times;</button>
             </div>
         </div>
         <div class="form-group">
-            <label>Nieuws Title:</label>
-            <input type="text" id="inNieuwsTitle" value="TOT ZIENS JORIS EN WELKOM AN!" oninput="update()">
-        </div>
-        <div class="form-group">
-            <label>Nieuws Subtitel/Inleiding:</label>
-            <textarea id="inNieuwsSub" rows="2" placeholder="Vul hier inleiding in..." oninput="update()"></textarea>
-        </div>
-        <div class="form-group">
-            <label>Nieuws Bericht:</label>
+            <div class="toggle-group">
+                <label>Nieuws Sectie:</label>
+                <label class="toggle-switch-label"><input type="checkbox" id="toggleNieuws" checked onchange="update()"> Tone / Toon</label>
+            </div>
+            <input type="text" id="inNieuwsTitle" value="TOT ZIENS JORIS EN WELKOM AN!" oninput="update()" style="margin-bottom: 4px;">
+            <textarea id="inNieuwsSub" rows="2" placeholder="Vul hier inleiding in..." oninput="update()" style="margin-bottom: 4px;"></textarea>
             <textarea id="inNieuws" rows="3" placeholder="Nieuwsbericht..." oninput="update()"></textarea>
         </div>
         <div class="form-group">
-            <label>De Anecdote:</label>
+            <div class="toggle-group">
+                <label>De Anecdote:</label>
+                <label class="toggle-switch-label"><input type="checkbox" id="toggleAnecdote" checked onchange="update()"> Tone / Toon</label>
+            </div>
             <textarea id="inAnecdote" rows="3" placeholder="Vul hier de anecdote in..." oninput="update()"></textarea>
         </div>
 
@@ -493,38 +605,53 @@
             <input type="text" id="inMeta2" value="UITGAVE NR 1  |  AUGUSTUS 2026" oninput="update()">
         </div>
         <div class="form-group">
-            <label>Activiteit in de kijker (Titel):</label>
-            <input type="text" id="inActTitle" placeholder="Titel van de activiteit..." oninput="update()">
-        </div>
-        <div class="form-group">
-            <label>Activiteit Beschrijving:</label>
+            <div class="toggle-group">
+                <label>Activiteit in de kijker (Tekst):</label>
+                <label class="toggle-switch-label"><input type="checkbox" id="toggleActText" checked onchange="update()"> Tone / Toon</label>
+            </div>
+            <input type="text" id="inActTitle" placeholder="Titel van de activiteit..." oninput="update()" style="margin-bottom: 4px;">
             <textarea id="inAct" rows="2" placeholder="Vul hier de activiteit beschrijving in..." oninput="update()"></textarea>
         </div>
         <div class="form-group">
-            <label>Foto Activiteit:</label>
+            <div class="toggle-group">
+                <label>Foto Activiteit:</label>
+                <label class="toggle-switch-label"><input type="checkbox" id="toggleActImg" checked onchange="update()"> Tone / Toon</label>
+            </div>
             <div class="file-input-group">
                 <input type="file" id="inputAct" accept="image/*" onchange="openCropModal(this, 'containerAct')">
                 <button class="file-delete-btn" onclick="clearFileInput('inputAct', 'containerAct')" title="Wis gekozen bestand">&times;</button>
             </div>
         </div>
         <div class="form-group">
-            <label>Dingetje van de maand:</label>
+            <div class="toggle-group">
+                <label>Dingetje van de maand (Tekst):</label>
+                <label class="toggle-switch-label"><input type="checkbox" id="toggleDingetjeText" checked onchange="update()"> Tone / Toon</label>
+            </div>
             <textarea id="inDingetje" rows="3" placeholder="Vul hier tekst in..." oninput="update()"></textarea>
             <input type="text" id="inAuthors" placeholder="Auteurs..." oninput="update()" style="margin-top:4px;">
         </div>
         <div class="form-group">
-            <label>Foto Dingetje van de maand (Hoge foto):</label>
+            <div class="toggle-group">
+                <label>Foto Dingetje van de maand:</label>
+                <label class="toggle-switch-label"><input type="checkbox" id="toggleDingetjeImg" checked onchange="update()"> Tone / Toon</label>
+            </div>
             <div class="file-input-group">
                 <input type="file" id="inputDingetje" accept="image/*" onchange="openCropModal(this, 'containerDingetjePhoto')">
                 <button class="file-delete-btn" onclick="clearFileInput('inputDingetje', 'containerDingetjePhoto')" title="Wis gekozen bestand">&times;</button>
             </div>
         </div>
         <div class="form-group">
-            <label>Mens achter de badge:</label>
+            <div class="toggle-group">
+                <label>Mens achter de badge (Tekst):</label>
+                <label class="toggle-switch-label"><input type="checkbox" id="toggleBadgeText" checked onchange="update()"> Tone / Toon</label>
+            </div>
             <textarea id="inBadge" rows="2" placeholder="Vul hier de tekst over de medewerker in..." oninput="update()"></textarea>
         </div>
         <div class="form-group">
-            <label>Foto Medewerker:</label>
+            <div class="toggle-group">
+                <label>Foto Medewerker:</label>
+                <label class="toggle-switch-label"><input type="checkbox" id="toggleBadgeImg" checked onchange="update()"> Tone / Toon</label>
+            </div>
             <div class="file-input-group">
                 <input type="file" id="inputBadge" accept="image/*" onchange="openCropModal(this, 'containerBadge')">
                 <button class="file-delete-btn" onclick="clearFileInput('inputBadge', 'containerBadge')" title="Wis gekozen bestand">&times;</button>
@@ -538,30 +665,48 @@
             <input type="text" id="inMeta3" value="UITGAVE NR 1  |  AUGUSTUS 2026" oninput="update()">
         </div>
         <div class="form-group">
-            <label>Goede afspraken:</label>
+            <div class="toggle-group">
+                <label>Goede afspraken:</label>
+                <label class="toggle-switch-label"><input type="checkbox" id="toggleAfspraken" checked onchange="update()"> Tone / Toon</label>
+            </div>
             <textarea id="inAfspraken" rows="3" placeholder="Vul hier afspraken in..." oninput="update()"></textarea>
         </div>
         <div class="form-group">
-            <label>Grondbeginsel Rode Kruis:</label>
+            <div class="toggle-group">
+                <label>Grondbeginsel Rode Kruis:</label>
+                <label class="toggle-switch-label"><input type="checkbox" id="toggleRodeKruis" checked onchange="update()"> Tone / Toon</label>
+            </div>
             <textarea id="inRodeKruis" rows="3" placeholder="Vul hier de kernwaarde in..." oninput="update()"></textarea>
         </div>
         <div class="form-group">
-            <label>Uit de oude doos (Tekst):</label>
+            <div class="toggle-group">
+                <label>Uit de oude doos (Tekst):</label>
+                <label class="toggle-switch-label"><input type="checkbox" id="toggleOudeDoosText" checked onchange="update()"> Tone / Toon</label>
+            </div>
             <textarea id="inOudeDoos" rows="2" placeholder="Vul hier tekst in..." oninput="update()"></textarea>
         </div>
         <div class="form-group">
-            <label>Foto Uit De Oude Doos:</label>
+            <div class="toggle-group">
+                <label>Foto Uit De Oude Doos:</label>
+                <label class="toggle-switch-label"><input type="checkbox" id="toggleOudeDoosImg" checked onchange="update()"> Tone / Toon</label>
+            </div>
             <div class="file-input-group">
                 <input type="file" id="inputOudeDoos" accept="image/*" onchange="openCropModal(this, 'containerOudeDoos')">
                 <button class="file-delete-btn" onclick="clearFileInput('inputOudeDoos', 'containerOudeDoos')" title="Wis gekozen bestand">&times;</button>
             </div>
         </div>
         <div class="form-group">
-            <label>Agenda van de maand:</label>
+            <div class="toggle-group">
+                <label>Agenda van de maand:</label>
+                <label class="toggle-switch-label"><input type="checkbox" id="toggleAgenda" checked onchange="update()"> Tone / Toon</label>
+            </div>
             <textarea id="inAgenda" rows="3" placeholder="Vul hier agenda-items in..." oninput="update()"></textarea>
         </div>
         <div class="form-group">
-            <label>Redactie Contact:</label>
+            <div class="toggle-group">
+                <label>Redactie Contact:</label>
+                <label class="toggle-switch-label"><input type="checkbox" id="toggleContact" checked onchange="update()"> Tone / Toon</label>
+            </div>
             <input type="text" id="inContact" value="Lauretta, Stefanie, Joris V of Michel" oninput="update()">
         </div>
 
@@ -585,34 +730,35 @@
             <div class="img-container header-img" id="containerMain"></div>
 
             <!-- FEEST & WIST JE DAT BOXES -->
-            <div class="grid-2">
-                <div class="box feest-box">
-                    <div class="box-title">FEEST</div>
+            <div class="grid-2" id="gridFeestWist">
+                <div class="box feest-box" id="feestBox">
+                    <div class="box-title">FEEST!</div>
                     <div class="box-content" id="outFeest">---</div>
                 </div>
-                <div class="box wist-je-dat-box">
+                <div class="box wist-je-dat-box" id="wistJeDatBox">
                     <div class="box-title">WIST JE DAT?</div>
                     <div class="box-content" id="outWistJeDat">---</div>
                 </div>
             </div>
 
             <!-- SEPARATE TWO-PHOTO SECTION DIRECTLY BELOW FEEST / WIST JE DAT -->
-            <div class="grid-2">
+            <div class="grid-2" id="gridMidPhotos">
                 <div class="img-container grid-middle-photos" id="containerMidPhoto1">
-                    <span>[ AFBEELDING 1 ]</span>
+                    <span>[ AFBEELDING 1 ! ]</span>
                 </div>
                 <div class="img-container grid-middle-photos" id="containerMidPhoto2">
-                    <span>[ AFBEELDING 2 ]</span>
+                    <span>[ AFBEELDING 2 ! ]</span>
                 </div>
             </div>
 
-            <div class="box">
+            <div class="box news-box" id="newsBox">
                 <div class="box-title" id="outNieuwsTitle">NIEUWS</div>
                 <div class="box-content" id="outNieuwsSub" style="font-weight: bold; margin-bottom: 4px;"></div>
-                <div class="box-content" id="outNieuws">---</div>
+                <div class="box-content news-text" id="outNieuws">---</div>
             </div>
 
-            <div class="box" style="border-left: 4px solid #d32f2f;">
+            <!-- TOGGLEABLE DE ANECDOTE BOX -->
+            <div class="box" id="anecdoteBox" style="border-left: 4px solid #d32f2f; flex-shrink: 0;">
                 <div class="box-title">DE ANECDOTE</div>
                 <div class="box-content anecdote-text" id="outAnecdote">---</div>
             </div>
@@ -623,27 +769,27 @@
             <div class="meta-bar" id="outMeta2">UITGAVE NR 1  |  AUGUSTUS 2026</div>
 
             <!-- SECTION 1: ACTIVITEIT IN DE KIJKER -->
-            <div class="grid-page2-standard">
-                <div class="box">
+            <div class="grid-page2-standard" id="gridAct">
+                <div class="box" id="actTextBox">
                     <div class="box-title">ACTIVITEIT IN DE KIJKER</div>
                     <div class="box-content" id="outActTitle" style="font-weight: bold; margin-bottom: 2px;"></div>
                     <div class="box-content" id="outAct">---</div>
                 </div>
-                <div class="box" style="background: transparent; border: none; padding: 0;">
+                <div class="box" id="actImgBox" style="background: transparent; border: none; padding: 0;">
                     <div class="img-container" id="containerAct">
                         <span>[ FOTO VAN ACTIVITEIT ]</span>
                     </div>
                 </div>
             </div>
 
-            <!-- SECTION 2: DINGETJE VAN DE MAAND (TALLER PHOTO SLOT) -->
-            <div class="grid-page2-custom-photo">
-                <div class="box" style="border-left: 4px solid #d32f2f;">
+            <!-- SECTION 2: DINGETJE VAN DE MAAND -->
+            <div class="grid-page2-custom-photo" id="gridDingetje">
+                <div class="box dingetje-box" id="dingetjeTextBox" style="border-left: 4px solid #d32f2f;">
                     <div class="box-title">DINGETJE VAN DE MAAND</div>
                     <div class="box-content" id="outDingetje">---</div>
                     <div class="box-content" id="outAuthors" style="font-weight: bold; margin-top: 4px; color: #555;"></div>
                 </div>
-                <div class="box" style="background: transparent; border: none; padding: 0;">
+                <div class="box" id="dingetjeImgBox" style="background: transparent; border: none; padding: 0;">
                     <div class="img-container" id="containerDingetjePhoto">
                         <span>[ FOTO DINGETJE ]</span>
                     </div>
@@ -651,15 +797,15 @@
             </div>
 
             <!-- SECTION 3: MENS ACHTER DE BADGE -->
-            <div class="grid-page2-standard">
-                <div class="box">
-                    <div class="box-title">MENS ACHTER DE BADGE</div>
-                    <div class="box-content" id="outBadge">---</div>
-                </div>
-                <div class="box" style="background: transparent; border: none; padding: 0;">
+            <div class="grid-page2-badge-swapped" id="gridBadge">
+                <div class="box" id="badgeImgBox" style="background: transparent; border: none; padding: 0;">
                     <div class="img-container" id="containerBadge">
                         <span>[ FOTO MEDEWERKER ]</span>
                     </div>
+                </div>
+                <div class="box" id="badgeTextBox">
+                    <div class="box-title">MENS ACHTER DE BADGE</div>
+                    <div class="box-content" id="outBadge">---</div>
                 </div>
             </div>
         </div>
@@ -669,24 +815,24 @@
             <div class="meta-bar" id="outMeta3">UITGAVE NR 1  |  AUGUSTUS 2026</div>
 
             <!-- 1. GOEDE AFSPRAKEN, GOEDE VRIENDEN -->
-            <div class="box">
+            <div class="box" id="afsprakenBox">
                 <div class="box-title">GOEDE AFSPRAKEN, GOEDE VRIENDEN</div>
                 <div class="box-content" id="outAfspraken">---</div>
             </div>
 
             <!-- 2. GRONDBEGINSEL / KERNWAARDE VAN HET RODE KRUIS -->
-            <div class="box">
+            <div class="box rode-kruis-box" id="rodeKruisBox">
                 <div class="box-title">GRONDBEGINSEL / KERNWAARDE VAN HET RODE KRUIS</div>
                 <div class="box-content" id="outRodeKruis">---</div>
             </div>
 
             <!-- 3. UIT DE OUDE DOOS -->
-            <div class="grid-2">
-                <div class="box">
+            <div class="grid-2" id="gridOudeDoos">
+                <div class="box" id="oudeDoosTextBox">
                     <div class="box-title">UIT DE OUDE DOOS</div>
                     <div class="box-content" id="outOudeDoos">---</div>
                 </div>
-                <div class="box" style="background: transparent; border: none; padding: 0; margin-bottom: 8px;">
+                <div class="box" id="oudeDoosImgBox" style="background: transparent; border: none; padding: 0; margin-bottom: 8px;">
                     <div class="img-container" id="containerOudeDoos">
                         <span>[ FOTO UIT DE OUDE DOOS ]</span>
                     </div>
@@ -694,16 +840,17 @@
             </div>
 
             <!-- 4. AGENDA VAN DE MAAND -->
-            <div class="box">
+            <div class="box" id="agendaBox">
                 <div class="box-title">AGENDA VAN DE MAAND</div>
                 <div class="box-content" id="outAgenda">---</div>
             </div>
 
             <!-- 5. VRAGEN, SUGGESTIES, OPMERKINGEN? -->
-            <div class="box contact-box">
+            <div class="box contact-box" id="contactBox">
                 <div class="box-title">VRAGEN, SUGGESTIES, OPMERKINGEN?</div>
                 <div class="box-content">
-                    Contacteer het redactie team: <b id="outContact">---</b> | <i>Of laat een berichtje achter in de suggestie box in het teamlokaal.</i>
+                    Contacteer het redactie team: <b id="outContact">---</b><br>
+                    <i>Of laat een berichtje achter in de suggestie box in het teamlokaal.</i>
                 </div>
             </div>
         </div>
@@ -747,6 +894,29 @@
             });
         }
 
+        function setVisibility(elementId, isVisible) {
+            const el = document.getElementById(elementId);
+            if (el) {
+                el.style.display = isVisible ? '' : 'none';
+            }
+        }
+
+        function updateGridState(gridId, item1Visible, item2Visible) {
+            const grid = document.getElementById(gridId);
+            if (!grid) return;
+
+            if (!item1Visible && !item2Visible) {
+                grid.style.display = 'none';
+            } else {
+                grid.style.display = 'grid';
+                if (!item1Visible || !item2Visible) {
+                    grid.classList.add('single-col');
+                } else {
+                    grid.classList.remove('single-col');
+                }
+            }
+        }
+
         function update() {
             document.getElementById('outBannerTitle').innerText = document.getElementById('inBannerTitle').value || 'NOCHH NIEUWS';
             document.getElementById('outBannerSub').innerText = document.getElementById('inBannerSub').value || '';
@@ -755,25 +925,73 @@
             document.getElementById('outMeta2').innerText = document.getElementById('inMeta2').value || '---';
             document.getElementById('outMeta3').innerText = document.getElementById('inMeta3').value || '---';
 
+            // PAGE 1 TOGGLES
+            setVisibility('containerMain', document.getElementById('toggleMainImg').checked);
+            
+            const showFeest = document.getElementById('toggleFeest').checked;
+            const showWist = document.getElementById('toggleWistJeDat').checked;
+            setVisibility('feestBox', showFeest);
+            setVisibility('wistJeDatBox', showWist);
+            updateGridState('gridFeestWist', showFeest, showWist);
             document.getElementById('outFeest').innerText = document.getElementById('inFeest').value || '---';
             document.getElementById('outWistJeDat').innerText = document.getElementById('inWistJeDat').value || '---';
-            
+
+            const showMid1 = document.getElementById('toggleMidPhoto1').checked;
+            const showMid2 = document.getElementById('toggleMidPhoto2').checked;
+            setVisibility('containerMidPhoto1', showMid1);
+            setVisibility('containerMidPhoto2', showMid2);
+            updateGridState('gridMidPhotos', showMid1, showMid2);
+
+            setVisibility('newsBox', document.getElementById('toggleNieuws').checked);
             document.getElementById('outNieuwsTitle').innerText = document.getElementById('inNieuwsTitle').value || 'NIEUWS';
             document.getElementById('outNieuwsSub').innerText = document.getElementById('inNieuwsSub').value || '';
             document.getElementById('outNieuws').innerText = document.getElementById('inNieuws').value || '---';
-            
+
+            setVisibility('anecdoteBox', document.getElementById('toggleAnecdote').checked);
             document.getElementById('outAnecdote').innerText = document.getElementById('inAnecdote').value || '---';
 
+            // PAGE 2 TOGGLES
+            const showActText = document.getElementById('toggleActText').checked;
+            const showActImg = document.getElementById('toggleActImg').checked;
+            setVisibility('actTextBox', showActText);
+            setVisibility('actImgBox', showActImg);
+            updateGridState('gridAct', showActText, showActImg);
             document.getElementById('outActTitle').innerText = document.getElementById('inActTitle').value || '';
             document.getElementById('outAct').innerText = document.getElementById('inAct').value || '---';
+
+            const showDingText = document.getElementById('toggleDingetjeText').checked;
+            const showDingImg = document.getElementById('toggleDingetjeImg').checked;
+            setVisibility('dingetjeTextBox', showDingText);
+            setVisibility('dingetjeImgBox', showDingImg);
+            updateGridState('gridDingetje', showDingText, showDingImg);
             document.getElementById('outDingetje').innerText = document.getElementById('inDingetje').value || '---';
             document.getElementById('outAuthors').innerText = document.getElementById('inAuthors').value || '';
+
+            const showBadgeImg = document.getElementById('toggleBadgeImg').checked;
+            const showBadgeText = document.getElementById('toggleBadgeText').checked;
+            setVisibility('badgeImgBox', showBadgeImg);
+            setVisibility('badgeTextBox', showBadgeText);
+            updateGridState('gridBadge', showBadgeImg, showBadgeText);
             document.getElementById('outBadge').innerText = document.getElementById('inBadge').value || '---';
 
-            document.getElementById('outAgenda').innerText = document.getElementById('inAgenda').value || '---';
-            document.getElementById('outRodeKruis').innerText = document.getElementById('inRodeKruis').value || '---';
-            document.getElementById('outOudeDoos').innerText = document.getElementById('inOudeDoos').value || '---';
+            // PAGE 3 TOGGLES
+            setVisibility('afsprakenBox', document.getElementById('toggleAfspraken').checked);
             document.getElementById('outAfspraken').innerText = document.getElementById('inAfspraken').value || '---';
+
+            setVisibility('rodeKruisBox', document.getElementById('toggleRodeKruis').checked);
+            document.getElementById('outRodeKruis').innerText = document.getElementById('inRodeKruis').value || '---';
+
+            const showOudeText = document.getElementById('toggleOudeDoosText').checked;
+            const showOudeImg = document.getElementById('toggleOudeDoosImg').checked;
+            setVisibility('oudeDoosTextBox', showOudeText);
+            setVisibility('oudeDoosImgBox', showOudeImg);
+            updateGridState('gridOudeDoos', showOudeText, showOudeImg);
+            document.getElementById('outOudeDoos').innerText = document.getElementById('inOudeDoos').value || '---';
+
+            setVisibility('agendaBox', document.getElementById('toggleAgenda').checked);
+            document.getElementById('outAgenda').innerText = document.getElementById('inAgenda').value || '---';
+
+            setVisibility('contactBox', document.getElementById('toggleContact').checked);
             document.getElementById('outContact').innerText = document.getElementById('inContact').value || '---';
         }
 
@@ -853,7 +1071,7 @@
         function loadDefaultHeaderImage() {
             const container = document.getElementById('containerMain');
             const targetWidth = container.clientWidth || 600;
-            const targetHeight = container.clientHeight || 220;
+            const targetHeight = container.clientHeight || 180;
             const targetRatio = targetWidth / targetHeight;
 
             const img = new Image();
@@ -898,7 +1116,9 @@
                 if (isMainHeader) {
                     loadDefaultHeaderImage();
                 } else {
-                    container.innerHTML = '<span>[ AFBEELDING ]</span>';
+                    const labelText = containerId === 'containerMidPhoto1' ? '[ AFBEELDING 1 ! ]' : 
+                                     containerId === 'containerMidPhoto2' ? '[ AFBEELDING 2 ! ]' : '[ AFBEELDING ]';
+                    container.innerHTML = `<span>${labelText}</span>`;
                     container.style.backgroundColor = '#f0f0f0';
                     container.style.border = '1px dashed #999';
                 }
