@@ -9,6 +9,10 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 
+    <!-- Dependencies for Interactive Image Cropping -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.js"></script>
+
     <style>
         * { box-sizing: border-box; }
         
@@ -339,6 +343,60 @@
             line-height: 1.25;
         }
 
+        /* CROPPER MODAL STYLING */
+        .crop-modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0; left: 0;
+            width: 100vw; height: 100vh;
+            background-color: rgba(0, 0, 0, 0.7);
+            z-index: 99999;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .crop-modal-content {
+            background: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            max-width: 600px;
+            width: 90%;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .crop-image-wrapper {
+            max-height: 400px;
+            overflow: hidden;
+        }
+
+        .crop-modal-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+        }
+
+        .crop-btn-save {
+            background-color: #d32f2f;
+            color: #fff;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 4px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .crop-btn-cancel {
+            background-color: #777;
+            color: #fff;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 4px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
         @media print {
             body { background: white; padding: 0; display: block; }
             .form-panel { display: none; }
@@ -381,7 +439,7 @@
         <div class="form-group">
             <label>Hoofdafbeelding(en):</label>
             <div class="file-input-group">
-                <input type="file" id="inputMain" accept="image/*" onchange="previewImages(this, 'containerMain')">
+                <input type="file" id="inputMain" accept="image/*" onchange="openCropModal(this, 'containerMain')">
                 <button class="file-delete-btn" onclick="clearFileInput('inputMain', 'containerMain', true)" title="Wis gekozen bestand">&times;</button>
             </div>
         </div>
@@ -396,14 +454,14 @@
         <div class="form-group">
             <label>Extra Foto 1 (Midden Links):</label>
             <div class="file-input-group">
-                <input type="file" id="inputMid1" accept="image/*" onchange="previewImages(this, 'containerMidPhoto1')">
+                <input type="file" id="inputMid1" accept="image/*" onchange="openCropModal(this, 'containerMidPhoto1')">
                 <button class="file-delete-btn" onclick="clearFileInput('inputMid1', 'containerMidPhoto1')" title="Wis gekozen bestand">&times;</button>
             </div>
         </div>
         <div class="form-group">
             <label>Extra Foto 2 (Midden Rechts):</label>
             <div class="file-input-group">
-                <input type="file" id="inputMid2" accept="image/*" onchange="previewImages(this, 'containerMidPhoto2')">
+                <input type="file" id="inputMid2" accept="image/*" onchange="openCropModal(this, 'containerMidPhoto2')">
                 <button class="file-delete-btn" onclick="clearFileInput('inputMid2', 'containerMidPhoto2')" title="Wis gekozen bestand">&times;</button>
             </div>
         </div>
@@ -441,7 +499,7 @@
         <div class="form-group">
             <label>Foto Activiteit:</label>
             <div class="file-input-group">
-                <input type="file" id="inputAct" accept="image/*" onchange="previewImages(this, 'containerAct')">
+                <input type="file" id="inputAct" accept="image/*" onchange="openCropModal(this, 'containerAct')">
                 <button class="file-delete-btn" onclick="clearFileInput('inputAct', 'containerAct')" title="Wis gekozen bestand">&times;</button>
             </div>
         </div>
@@ -453,7 +511,7 @@
         <div class="form-group">
             <label>Foto Dingetje van de maand (Hoge foto):</label>
             <div class="file-input-group">
-                <input type="file" id="inputDingetje" accept="image/*" onchange="previewImages(this, 'containerDingetjePhoto')">
+                <input type="file" id="inputDingetje" accept="image/*" onchange="openCropModal(this, 'containerDingetjePhoto')">
                 <button class="file-delete-btn" onclick="clearFileInput('inputDingetje', 'containerDingetjePhoto')" title="Wis gekozen bestand">&times;</button>
             </div>
         </div>
@@ -464,7 +522,7 @@
         <div class="form-group">
             <label>Foto Medewerker:</label>
             <div class="file-input-group">
-                <input type="file" id="inputBadge" accept="image/*" onchange="previewImages(this, 'containerBadge')">
+                <input type="file" id="inputBadge" accept="image/*" onchange="openCropModal(this, 'containerBadge')">
                 <button class="file-delete-btn" onclick="clearFileInput('inputBadge', 'containerBadge')" title="Wis gekozen bestand">&times;</button>
             </div>
         </div>
@@ -490,7 +548,7 @@
         <div class="form-group">
             <label>Foto Uit De Oude Doos:</label>
             <div class="file-input-group">
-                <input type="file" id="inputOudeDoos" accept="image/*" onchange="previewImages(this, 'containerOudeDoos')">
+                <input type="file" id="inputOudeDoos" accept="image/*" onchange="openCropModal(this, 'containerOudeDoos')">
                 <button class="file-delete-btn" onclick="clearFileInput('inputOudeDoos', 'containerOudeDoos')" title="Wis gekozen bestand">&times;</button>
             </div>
         </div>
@@ -648,6 +706,20 @@
 
     </div>
 
+    <!-- INTERACTIVE CROPPER MODAL -->
+    <div class="crop-modal-overlay" id="cropModal">
+        <div class="crop-modal-content">
+            <h3 style="margin: 0; color: #d32f2f;">Afbeelding Bijsnijden / Crop Image</h3>
+            <div class="crop-image-wrapper">
+                <img id="cropImageTarget" style="max-width: 100%;">
+            </div>
+            <div class="crop-modal-actions">
+                <button class="crop-btn-cancel" onclick="closeCropModal()">Annuleren</button>
+                <button class="crop-btn-save" onclick="applyCrop()">Opslaan & Toepassen</button>
+            </div>
+        </div>
+    </div>
+
     <!-- JavaScript Functions -->
     <script>
         const pageDimensions = {
@@ -655,6 +727,10 @@
             letter: { width: '215.9mm', height: '279.4mm', pdfWidth: 215.9, pdfHeight: 279.4, name: 'letter' },
             legal: { width: '215.9mm', height: '355.6mm', pdfWidth: 215.9, pdfHeight: 355.6, name: 'legal' }
         };
+
+        let cropperInstance = null;
+        let activeContainerId = null;
+        let activeFileInput = null;
 
         function changePageSize() {
             const selectedFormat = document.getElementById('inPageSize').value;
@@ -697,8 +773,85 @@
             document.getElementById('outContact').innerText = document.getElementById('inContact').value || '---';
         }
 
-        // CROP IMAGE MATHEMATICALLY BEFORE RENDER TO PREVENT PDF STRETCH
-        function cropImageToTargetAspect(imageSrc, targetWidth, targetHeight, callback) {
+        /* OPEN INTERACTIVE CROPPER MODAL */
+        function openCropModal(input, containerId) {
+            const files = input.files;
+            if (!files || files.length === 0) return;
+
+            activeFileInput = input;
+            activeContainerId = containerId;
+
+            const file = files[0];
+            const reader = new FileReader();
+
+            reader.onload = function(e) {
+                const imageTarget = document.getElementById('cropImageTarget');
+                imageTarget.src = e.target.result;
+
+                const container = document.getElementById(containerId);
+                const targetWidth = container.clientWidth || 300;
+                const targetHeight = container.clientHeight || 200;
+                const aspectRatio = targetWidth / targetHeight;
+
+                document.getElementById('cropModal').style.display = 'flex';
+
+                if (cropperInstance) {
+                    cropperInstance.destroy();
+                }
+
+                cropperInstance = new Cropper(imageTarget, {
+                    aspectRatio: aspectRatio,
+                    viewMode: 1,
+                    autoCropArea: 1
+                });
+            };
+
+            reader.readAsDataURL(file);
+        }
+
+        function closeCropModal() {
+            document.getElementById('cropModal').style.display = 'none';
+            if (cropperInstance) {
+                cropperInstance.destroy();
+                cropperInstance = null;
+            }
+            if (activeFileInput) {
+                activeFileInput.value = '';
+            }
+        }
+
+        function applyCrop() {
+            if (!cropperInstance || !activeContainerId) return;
+
+            const container = document.getElementById(activeContainerId);
+            const targetWidth = (container.clientWidth || 300) * 2;
+            const targetHeight = (container.clientHeight || 200) * 2;
+
+            const croppedCanvas = cropperInstance.getCroppedCanvas({
+                width: targetWidth,
+                height: targetHeight
+            });
+
+            const croppedDataUrl = croppedCanvas.toDataURL('image/jpeg', 0.95);
+
+            container.innerHTML = '';
+            container.style.backgroundColor = 'transparent';
+            container.style.border = 'none';
+
+            const img = document.createElement('img');
+            img.src = croppedDataUrl;
+            container.appendChild(img);
+
+            closeCropModal();
+        }
+
+        /* AUTOMATICALLY CROP DEFAULT IMAGE ON INITIAL LOAD */
+        function loadDefaultHeaderImage() {
+            const container = document.getElementById('containerMain');
+            const targetWidth = container.clientWidth || 600;
+            const targetHeight = container.clientHeight || 220;
+            const targetRatio = targetWidth / targetHeight;
+
             const img = new Image();
             img.crossOrigin = "anonymous";
             img.onload = function() {
@@ -707,9 +860,7 @@
                 canvas.height = targetHeight * 2;
                 const ctx = canvas.getContext('2d');
 
-                const targetRatio = targetWidth / targetHeight;
                 const imgRatio = img.width / img.height;
-
                 let sw, sh, sx, sy;
 
                 if (imgRatio > targetRatio) {
@@ -725,48 +876,13 @@
                 }
 
                 ctx.drawImage(img, sx, sy, sw, sh, 0, 0, canvas.width, canvas.height);
-                callback(canvas.toDataURL('image/jpeg', 0.95));
-            };
-            img.src = imageSrc;
-        }
-
-        function loadDefaultHeaderImage() {
-            const container = document.getElementById('containerMain');
-            const targetWidth = container.clientWidth || 600;
-            const targetHeight = container.clientHeight || 220;
-
-            cropImageToTargetAspect('rode kruis.jpg', targetWidth, targetHeight, function(croppedDataUrl) {
+                
                 container.innerHTML = '';
-                const img = document.createElement('img');
-                img.src = croppedDataUrl;
-                container.appendChild(img);
-            });
-        }
-
-        function previewImages(input, containerId) {
-            const files = input.files;
-            const container = document.getElementById(containerId);
-
-            if (files && files.length > 0) {
-                container.style.backgroundColor = 'transparent';
-                container.style.border = 'none';
-
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    const targetWidth = container.clientWidth || 300;
-                    const targetHeight = container.clientHeight || 200;
-
-                    cropImageToTargetAspect(e.target.result, targetWidth, targetHeight, function(croppedDataUrl) {
-                        container.innerHTML = '';
-                        const img = document.createElement('img');
-                        img.src = croppedDataUrl;
-                        container.appendChild(img);
-                    });
-                }
-                reader.readAsDataURL(files[0]);
-            } else {
-                clearFileInput(input.id, containerId);
-            }
+                const croppedImg = document.createElement('img');
+                croppedImg.src = canvas.toDataURL('image/jpeg', 0.95);
+                container.appendChild(croppedImg);
+            };
+            img.src = 'rode kruis.jpg';
         }
 
         function clearFileInput(inputId, containerId, isMainHeader = false) {
