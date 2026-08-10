@@ -259,9 +259,10 @@
             line-height: 1.45;
         }
 
-        /* BASE IMAGE CONTAINER WITHOUT FIXED PIXEL HEIGHT (PREVENTS STRETCHING) */
+        /* STRICT IMMUTABLE IMAGE CONTAINERS TO PREVENT CANVAS DISTORTION */
         .img-container {
             width: 100%;
+            height: 160px;
             background-color: #f0f0f0;
             display: flex;
             align-items: center;
@@ -275,30 +276,25 @@
             position: relative;
         }
 
-        /* MAIN HEADER IMAGE SLOT - NATURAL PROPORTIONAL ASPECT RATIO */
         .img-container.header-img {
+            height: 220px !important;
             border: none;
             background-color: transparent;
             margin-bottom: 8px;
-            min-height: auto;
         }
 
+        /* 100% WIDTH AND HEIGHT PRESERVED BY PRE-CROPPED DATA URL */
         .img-container img {
             width: 100% !important;
-            height: auto !important;
+            height: 100% !important;
             display: block;
             border-radius: 4px;
         }
 
         /* MIDDLE TWO PHOTOS ASPECT FIT */
         .grid-middle-photos {
-            height: 110px;
+            height: 110px !important;
             margin-bottom: 8px;
-        }
-
-        .grid-middle-photos img {
-            height: 100% !important;
-            object-fit: cover !important;
         }
 
         /* PAGE 2 LAYOUT */
@@ -315,30 +311,15 @@
         }
 
         #containerAct, #containerBadge {
-            height: 160px;
-        }
-
-        #containerAct img, #containerBadge img {
-            height: 100% !important;
-            object-fit: cover !important;
+            height: 160px !important;
         }
 
         #containerDingetjePhoto {
-            height: 240px;
-        }
-
-        #containerDingetjePhoto img {
-            height: 100% !important;
-            object-fit: cover !important;
+            height: 240px !important;
         }
 
         #containerOudeDoos {
-            height: 180px;
-        }
-
-        #containerOudeDoos img {
-            height: 100% !important;
-            object-fit: cover !important;
+            height: 180px !important;
         }
 
         /* Footer Box Styling */
@@ -719,10 +700,41 @@
             document.getElementById('outContact').innerText = document.getElementById('inContact').value || '---';
         }
 
+        // CROP IMAGE MATHEMATICALLY BEFORE RENDER TO PREVENT PDF STRETCH
+        function cropImageToTargetAspect(imageSrc, targetWidth, targetHeight, callback) {
+            const img = new Image();
+            img.onload = function() {
+                const canvas = document.createElement('canvas');
+                canvas.width = targetWidth * 2;
+                canvas.height = targetHeight * 2;
+                const ctx = canvas.getContext('2d');
+
+                const targetRatio = targetWidth / targetHeight;
+                const imgRatio = img.width / img.height;
+
+                let sw, sh, sx, sy;
+
+                if (imgRatio > targetRatio) {
+                    sh = img.height;
+                    sw = img.height * targetRatio;
+                    sx = (img.width - sw) / 2;
+                    sy = 0;
+                } else {
+                    sw = img.width;
+                    sh = img.width / targetRatio;
+                    sx = 0;
+                    sy = (img.height - sh) / 2;
+                }
+
+                ctx.drawImage(img, sx, sy, sw, sh, 0, 0, canvas.width, canvas.height);
+                callback(canvas.toDataURL('image/jpeg', 0.95));
+            };
+            img.src = imageSrc;
+        }
+
         function previewImages(input, containerId) {
             const files = input.files;
             const container = document.getElementById(containerId);
-            container.innerHTML = ''; 
 
             if (files && files.length > 0) {
                 container.style.backgroundColor = 'transparent';
@@ -730,9 +742,15 @@
 
                 const reader = new FileReader();
                 reader.onload = function(e) {
-                    const img = document.createElement('img');
-                    img.src = e.target.result;
-                    container.appendChild(img);
+                    const targetWidth = container.clientWidth || 300;
+                    const targetHeight = container.clientHeight || 200;
+
+                    cropImageToTargetAspect(e.target.result, targetWidth, targetHeight, function(croppedDataUrl) {
+                        container.innerHTML = '';
+                        const img = document.createElement('img');
+                        img.src = croppedDataUrl;
+                        container.appendChild(img);
+                    });
                 }
                 reader.readAsDataURL(files[0]);
             } else {
