@@ -259,12 +259,10 @@
             line-height: 1.45;
         }
 
-        /* Image Containers */
+        /* Base Image Containers */
         .img-container {
             width: 100%;
-            height: 100%;
-            min-height: 120px;
-            max-height: 180px;
+            height: 160px;
             background-color: #f0f0f0;
             display: flex;
             align-items: center;
@@ -275,41 +273,31 @@
             overflow: hidden;
             border-radius: 4px;
             padding: 0;
-            gap: 8px;
+            position: relative;
         }
 
-        /* INCREASED HEIGHT FOR MAIN HEADER IMAGE */
+        /* FIXED HEIGHT FOR MAIN HEADER IMAGE CONTAINER */
         .img-container.header-img {
-            min-height: 260px !important;
-            max-height: 280px !important;
+            height: 240px !important;
             border: none;
             background-color: transparent;
+            margin-bottom: 8px;
         }
 
-        /* HOOFDAFBEELDING COVER FILL FOR rode kruis.jpg */
-        #containerMain img {
+        /* STRETCH-FREE IMAGE FIT */
+        .img-container img {
             width: 100% !important;
             height: 100% !important;
-            max-width: 100% !important;
-            max-height: 100% !important;
             object-fit: cover !important;
+            object-position: center !important;
             border-radius: 4px;
+            display: block;
         }
 
         /* INDEPENDENT TWO-PHOTO SECTION UNDER FEEST/WIST JE DAT */
         .grid-middle-photos {
-            min-height: 110px !important;
-            max-height: 130px !important;
+            height: 120px !important;
             margin-bottom: 8px;
-        }
-
-        .grid-middle-photos img {
-            width: 100% !important;
-            height: 100% !important;
-            max-width: 100% !important;
-            max-height: 100% !important;
-            object-fit: cover !important;
-            border-radius: 4px;
         }
 
         /* PAGE 2 LAYOUT */
@@ -326,36 +314,17 @@
         }
 
         #containerAct, #containerBadge {
-            min-height: 170px !important;
-            max-height: 190px !important;
+            height: 180px !important;
         }
 
         /* TALLER HEIGHT FOR DINGETJE VAN DE MAAND */
         #containerDingetjePhoto {
-            min-height: 250px !important;
-            max-height: 270px !important;
-        }
-
-        #containerAct img, #containerDingetjePhoto img, #containerBadge img {
-            width: 100% !important;
-            height: 100% !important;
-            max-width: 100% !important;
-            max-height: 100% !important;
-            object-fit: cover !important;
+            height: 260px !important;
         }
 
         /* UIT DE OUDE DOOS Height */
         #containerOudeDoos {
-            min-height: 200px !important;
-            max-height: 200px !important;
-        }
-
-        #containerOudeDoos img {
-            width: 100% !important;
-            height: 100% !important;
-            max-width: 100% !important;
-            max-height: 100% !important;
-            object-fit: cover !important;
+            height: 190px !important;
         }
 
         /* Footer Box Styling */
@@ -557,7 +526,7 @@
             </div>
             <div class="meta-bar" id="outMeta1">UITGAVE NR 1  |  AUGUSTUS 2026</div>
 
-            <div class="img-container header-img" id="containerMain" style="margin-bottom: 8px;">
+            <div class="img-container header-img" id="containerMain">
                 <img src="rode kruis.jpg" alt="Rode Kruis Centrum" id="mainHeaderImage">
             </div>
 
@@ -777,40 +746,50 @@
             const selectedFormat = document.getElementById('inPageSize').value;
             const config = pageDimensions[selectedFormat] || pageDimensions.a4;
             
-            const pdf = new jsPDF('p', 'mm', config.name);
-            const pages = document.querySelectorAll('.page');
+            try {
+                const pdf = new jsPDF('p', 'mm', config.name);
+                const pages = document.querySelectorAll('.page');
 
-            for (let i = 0; i < pages.length; i++) {
-                const page = pages[i];
-                
-                const origBoxShadow = page.style.boxShadow;
-                const origBorder = page.style.border;
-                const origMargin = page.style.margin;
-                
-                page.style.boxShadow = 'none';
-                page.style.border = 'none';
-                page.style.margin = '0';
+                for (let i = 0; i < pages.length; i++) {
+                    const page = pages[i];
+                    
+                    const origBoxShadow = page.style.boxShadow;
+                    const origBorder = page.style.border;
+                    const origMargin = page.style.margin;
+                    
+                    page.style.boxShadow = 'none';
+                    page.style.border = 'none';
+                    page.style.margin = '0';
 
-                const canvas = await html2canvas(page, {
-                    scale: 2,
-                    useCORS: true,
-                    logging: false
-                });
+                    const canvas = await html2canvas(page, {
+                        scale: 2,
+                        useCORS: true,
+                        allowTaint: true,
+                        logging: false,
+                        width: page.offsetWidth,
+                        height: page.offsetHeight,
+                        windowWidth: page.offsetWidth,
+                        windowHeight: page.offsetHeight
+                    });
 
-                page.style.boxShadow = origBoxShadow;
-                page.style.border = origBorder;
-                page.style.margin = origMargin;
+                    page.style.boxShadow = origBoxShadow;
+                    page.style.border = origBorder;
+                    page.style.margin = origMargin;
 
-                const imgData = canvas.toDataURL('image/jpeg', 0.98);
-                
-                if (i > 0) {
-                    pdf.addPage(config.name, 'p');
+                    const imgData = canvas.toDataURL('image/jpeg', 0.98);
+                    
+                    if (i > 0) {
+                        pdf.addPage(config.name, 'p');
+                    }
+                    
+                    pdf.addImage(imgData, 'JPEG', 0, 0, config.pdfWidth, config.pdfHeight);
                 }
-                
-                pdf.addImage(imgData, 'JPEG', 0, 0, config.pdfWidth, config.pdfHeight);
-            }
 
-            pdf.save(`NOCHH_Nieuws_${selectedFormat.toUpperCase()}.pdf`);
+                pdf.save(`NOCHH_Nieuws_${selectedFormat.toUpperCase()}.pdf`);
+            } catch (error) {
+                console.error("PDF Export error:", error);
+                alert("Er is een fout opgetreden bij het genereren van de PDF.");
+            }
         }
 
         changePageSize();
