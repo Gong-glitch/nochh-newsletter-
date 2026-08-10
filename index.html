@@ -259,7 +259,7 @@
             line-height: 1.45;
         }
 
-        /* STRICT IMMUTABLE IMAGE CONTAINERS TO PREVENT CANVAS DISTORTION */
+        /* IMAGE CONTAINERS */
         .img-container {
             width: 100%;
             height: 160px;
@@ -283,7 +283,6 @@
             margin-bottom: 8px;
         }
 
-        /* 100% WIDTH AND HEIGHT PRESERVED BY PRE-CROPPED DATA URL */
         .img-container img {
             width: 100% !important;
             height: 100% !important;
@@ -521,9 +520,7 @@
             </div>
             <div class="meta-bar" id="outMeta1">UITGAVE NR 1  |  AUGUSTUS 2026</div>
 
-            <div class="img-container header-img" id="containerMain">
-                <img src="rode kruis.jpg" alt="Rode Kruis Centrum" id="mainHeaderImage">
-            </div>
+            <div class="img-container header-img" id="containerMain"></div>
 
             <!-- FEEST & WIST JE DAT BOXES -->
             <div class="grid-2">
@@ -703,6 +700,7 @@
         // CROP IMAGE MATHEMATICALLY BEFORE RENDER TO PREVENT PDF STRETCH
         function cropImageToTargetAspect(imageSrc, targetWidth, targetHeight, callback) {
             const img = new Image();
+            img.crossOrigin = "anonymous";
             img.onload = function() {
                 const canvas = document.createElement('canvas');
                 canvas.width = targetWidth * 2;
@@ -730,6 +728,19 @@
                 callback(canvas.toDataURL('image/jpeg', 0.95));
             };
             img.src = imageSrc;
+        }
+
+        function loadDefaultHeaderImage() {
+            const container = document.getElementById('containerMain');
+            const targetWidth = container.clientWidth || 600;
+            const targetHeight = container.clientHeight || 220;
+
+            cropImageToTargetAspect('rode kruis.jpg', targetWidth, targetHeight, function(croppedDataUrl) {
+                container.innerHTML = '';
+                const img = document.createElement('img');
+                img.src = croppedDataUrl;
+                container.appendChild(img);
+            });
         }
 
         function previewImages(input, containerId) {
@@ -765,9 +776,7 @@
             const container = document.getElementById(containerId);
             if (container) {
                 if (isMainHeader) {
-                    container.innerHTML = '<img src="rode kruis.jpg" alt="Rode Kruis Centrum" id="mainHeaderImage">';
-                    container.style.backgroundColor = 'transparent';
-                    container.style.border = 'none';
+                    loadDefaultHeaderImage();
                 } else {
                     container.innerHTML = '<span>[ AFBEELDING ]</span>';
                     container.style.backgroundColor = '#f0f0f0';
@@ -825,6 +834,7 @@
 
         changePageSize();
         update();
+        window.addEventListener('load', loadDefaultHeaderImage);
     </script>
 
 </body>
