@@ -100,7 +100,6 @@
         .pdf-btn {
             background-color: #d32f2f;
             color: white;
-            padding: 99px;
             border: none;
             border-radius: 4px;
             cursor: pointer;
@@ -137,7 +136,7 @@
             width: 210mm;
             height: 297mm;
             background: #fff;
-            padding: 15mm;
+            padding: 12mm 15mm 10mm 15mm;
             margin: 0 auto 25px auto;
             box-shadow: 0 2px 6px rgba(0,0,0,0.1);
             border: 1px solid #ccc;
@@ -147,46 +146,56 @@
             flex-direction: column;
         }
 
+        /* Header Banner Height (1.7cm) */
         .header-box {
             background-color: #d32f2f;
             color: white;
-            padding: 14px 20px;
+            height: 1.7cm;
+            padding: 0 20px;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            flex-wrap: wrap;
-            gap: 10px;
+            flex-wrap: nowrap;
         }
 
-        .header-box h1 { margin: 0; font-size: 22px; }
-        .header-box p { margin: 0; font-size: 13px; }
+        .header-box h1 { margin: 0; font-size: 24px; }
+        .header-box p { margin: 0; font-size: 14px; }
 
         .meta-bar {
             background-color: #f5f5f5;
-            padding: 8px 14px;
+            padding: 6px 14px;
             font-weight: bold;
-            font-size: 12px;
-            margin-top: 6px;
-            margin-bottom: 16px;
+            font-size: 13px;
+            margin-top: 5px;
+            margin-bottom: 8px;
             border-left: 4px solid #d32f2f;
         }
 
         .grid-2 { 
             display: grid; 
             grid-template-columns: 1fr 1fr; 
-            gap: 12px; 
+            gap: 10px; 
         }
         
         .box {
             border: 1px solid #ddd;
             border-radius: 4px;
-            padding: 12px;
-            margin-bottom: 12px;
+            padding: 8px 12px;
+            margin-bottom: 8px;
             background: #fafafa;
         }
 
+        .box.wist-je-dat-box {
+            background-color: #f9ecee;
+            border-color: #e2b6bc;
+        }
+
+        .box.feest-box {
+            background-color: #f7f9fa;
+        }
+
         .box-title {
-            font-size: 11px;
+            font-size: 15px;
             font-weight: bold;
             color: #d32f2f;
             text-transform: uppercase;
@@ -194,15 +203,22 @@
         }
 
         .box-content {
-            font-size: 12px;
+            font-size: 13.5px;
             line-height: 1.4;
             white-space: pre-wrap;
             word-break: break-word;
         }
 
-        /* IMAGE STRETCH FIX */
+        .box-content.anecdote-text {
+            font-size: 14.5px;
+            line-height: 1.45;
+        }
+
+        /* Image Containers */
         .img-container {
             width: 100%;
+            height: 100%;
+            min-height: 120px;
             max-height: 180px;
             background-color: #f0f0f0;
             display: flex;
@@ -211,10 +227,10 @@
             color: #666;
             font-size: 11px;
             border: 1px dashed #999;
-            overflow: hidden;
+            overflow-x: auto;
             border-radius: 4px;
-            margin-top: 5px;
             padding: 4px;
+            gap: 8px;
         }
 
         .img-container.header-img {
@@ -227,8 +243,71 @@
             width: auto;
             height: auto;
             object-fit: contain;
-            display: none;
             margin: auto;
+        }
+
+        /* PAGE 2 LAYOUT */
+        .grid-page2-standard {
+            display: grid;
+            grid-template-columns: 60% 38%;
+            gap: 2%;
+        }
+
+        .grid-page2-custom-photo {
+            display: grid;
+            grid-template-columns: 60% 28%;
+            gap: 2%;
+        }
+
+        #containerAct, #containerBadge {
+            min-height: 170px !important;
+            max-height: 190px !important;
+        }
+
+        /* TALLER HEIGHT FOR DINGETJE VAN DE MAAND */
+        #containerDingetjePhoto {
+            min-height: 250px !important;
+            max-height: 270px !important;
+        }
+
+        #containerAct img, #containerDingetjePhoto img, #containerBadge img {
+            width: 100% !important;
+            height: 100% !important;
+            max-width: 100% !important;
+            max-height: 100% !important;
+            object-fit: cover !important;
+        }
+
+        /* UIT DE OUDE DOOS Height */
+        #containerOudeDoos {
+            min-height: 200px !important;
+            max-height: 200px !important;
+        }
+
+        #containerOudeDoos img {
+            width: 100% !important;
+            height: 100% !important;
+            max-width: 100% !important;
+            max-height: 100% !important;
+            object-fit: cover !important;
+        }
+
+        /* Footer Box Styling */
+        .contact-box {
+            background-color: #f0f4f8;
+            padding: 4px 10px;
+            margin-top: auto;
+            margin-bottom: 0;
+        }
+
+        .contact-box .box-title {
+            font-size: 12px;
+            margin-bottom: 2px;
+        }
+
+        .contact-box .box-content {
+            font-size: 11.5px;
+            line-height: 1.25;
         }
 
         @media print {
@@ -248,12 +327,20 @@
         <!-- PAGINA 1 -->
         <div class="section-title">PAGINA 1</div>
         <div class="form-group">
+            <label>Banner Titel:</label>
+            <input type="text" id="inBannerTitle" value="NOCHH NIEUWS" oninput="update()">
+        </div>
+        <div class="form-group">
+            <label>Banner Ondertitel:</label>
+            <input type="text" id="inBannerSub" value="Samen op de hoogte, samen vooruit." oninput="update()">
+        </div>
+        <div class="form-group">
             <label>Pagina 1 Header Text:</label>
             <input type="text" id="inMeta1" value="UITGAVE NR 1  |  AUGUSTUS 2026" oninput="update()">
         </div>
         <div class="form-group">
-            <label>Hoofdafbeelding:</label>
-            <input type="file" accept="image/*" onchange="previewImage(this, 'imgMain')">
+            <label>Hoofdafbeelding(en):</label>
+            <input type="file" accept="image/*" multiple onchange="previewImages(this, 'containerMain')">
         </div>
         <div class="form-group">
             <label>Feest:</label>
@@ -264,13 +351,20 @@
             <textarea id="inWistJeDat" rows="2" placeholder="Vul hier tekst in..." oninput="update()"></textarea>
         </div>
         <div class="form-group">
-            <label>Nieuws (Titel/Bericht):</label>
-            <input type="text" id="inNieuwsTitle" value="Tot ziens Joris, welkom An!" oninput="update()">
-            <textarea id="inNieuws" rows="2" placeholder="Nieuwsbericht..." oninput="update()" style="margin-top:4px;"></textarea>
+            <label>Nieuws Title:</label>
+            <input type="text" id="inNieuwsTitle" value="TOT ZIENS JORIS EN WELKOM AN!" oninput="update()">
+        </div>
+        <div class="form-group">
+            <label>Nieuws Subtitel/Inleiding:</label>
+            <textarea id="inNieuwsSub" rows="2" placeholder="Vul hier inleiding in..." oninput="update()"></textarea>
+        </div>
+        <div class="form-group">
+            <label>Nieuws Bericht:</label>
+            <textarea id="inNieuws" rows="3" placeholder="Nieuwsbericht..." oninput="update()"></textarea>
         </div>
         <div class="form-group">
             <label>De Anecdote:</label>
-            <textarea id="inAnecdote" rows="3" oninput="update()">Twee collega’s, die het deskundig advies inriepen van een andere collega hoe je een betonschaar nu moet gebruiken om succesvol een slot te verwijderen. Zo gezegd, zo gedaan. Vol goede moed trokken ze samen naar een brievenbus (bewoner had het centrum verlaten) om het slot te verwijderen. Niet te geloven, alle stappen gevolgd en waarachtig: het slot sprong open. Het had een succesverhaal kunnen worden, ware het niet dat ze toen ontdekten dat ze de verkeerde brievenbus ontdaan hadden van een slot…</textarea>
+            <textarea id="inAnecdote" rows="3" placeholder="Vul hier de anecdote in..." oninput="update()"></textarea>
         </div>
 
         <!-- PAGINA 2 -->
@@ -280,23 +374,25 @@
             <input type="text" id="inMeta2" value="UITGAVE NR 1  |  AUGUSTUS 2026" oninput="update()">
         </div>
         <div class="form-group">
-            <label>Activiteit in de kijker:</label>
-            <textarea id="inAct" rows="2" placeholder="Vul hier de activiteit in..." oninput="update()"></textarea>
+            <label>Activiteit in de kijker (Titel):</label>
+            <input type="text" id="inActTitle" placeholder="Titel van de activiteit..." oninput="update()">
+        </div>
+        <div class="form-group">
+            <label>Activiteit Beschrijving:</label>
+            <textarea id="inAct" rows="2" placeholder="Vul hier de activiteit beschrijving in..." oninput="update()"></textarea>
         </div>
         <div class="form-group">
             <label>Foto Activiteit:</label>
-            <input type="file" accept="image/*" onchange="previewImage(this, 'imgAct')">
+            <input type="file" accept="image/*" multiple onchange="previewImages(this, 'containerAct')">
         </div>
         <div class="form-group">
             <label>Dingetje van de maand:</label>
-            <textarea id="inDingetje" rows="3" oninput="update()">“Het erkennen van mekaars aanwezigheid wanneer men mekaar begroet” schept wederzijds respect, geeft aan dat je beleefd bent tegen mekaar en mekaar respecteert. Het zorgt voor een moment van verbinding.
-Goedemorgen, goedemiddag, goedenavond, goedendag, ….zijn basiswoorden en waarden die drempelverlagend werkt om bijvoorbeeld tot een gesprek te komen of een vertrouwensband op te bouwen. Deze maand willen we hierop extra inzetten.
-Spreek mekaar erop aan, zowel bewoners als personeel.</textarea>
-            <input type="text" id="inAuthors" value="- Eddy, Kelly, Mustapha, Brecht" oninput="update()" style="margin-top:4px;">
+            <textarea id="inDingetje" rows="3" placeholder="Vul hier tekst in..." oninput="update()"></textarea>
+            <input type="text" id="inAuthors" placeholder="Auteurs..." oninput="update()" style="margin-top:4px;">
         </div>
         <div class="form-group">
-            <label>Foto Banner Dingetje:</label>
-            <input type="file" accept="image/*" onchange="previewImage(this, 'imgDingetjeBanner')">
+            <label>Foto Dingetje van de maand (Hoge foto):</label>
+            <input type="file" accept="image/*" multiple onchange="previewImages(this, 'containerDingetjePhoto')">
         </div>
         <div class="form-group">
             <label>Mens achter de badge:</label>
@@ -304,7 +400,7 @@ Spreek mekaar erop aan, zowel bewoners als personeel.</textarea>
         </div>
         <div class="form-group">
             <label>Foto Medewerker:</label>
-            <input type="file" accept="image/*" onchange="previewImage(this, 'imgBadge')">
+            <input type="file" accept="image/*" multiple onchange="previewImages(this, 'containerBadge')">
         </div>
 
         <!-- PAGINA 3 -->
@@ -314,24 +410,24 @@ Spreek mekaar erop aan, zowel bewoners als personeel.</textarea>
             <input type="text" id="inMeta3" value="UITGAVE NR 1  |  AUGUSTUS 2026" oninput="update()">
         </div>
         <div class="form-group">
-            <label>Agenda van de maand:</label>
-            <textarea id="inAgenda" rows="2" placeholder="Vul hier agenda-items in..." oninput="update()"></textarea>
+            <label>Goede afspraken:</label>
+            <textarea id="inAfspraken" rows="3" placeholder="Vul hier afspraken in..." oninput="update()"></textarea>
         </div>
         <div class="form-group">
             <label>Grondbeginsel Rode Kruis:</label>
-            <textarea id="inRodeKruis" rows="2" placeholder="Vul hier de kernwaarde in..." oninput="update()"></textarea>
+            <textarea id="inRodeKruis" rows="3" placeholder="Vul hier de kernwaarde in..." oninput="update()"></textarea>
         </div>
         <div class="form-group">
-            <label>Uit de oude doos:</label>
+            <label>Uit de oude doos (Tekst):</label>
             <textarea id="inOudeDoos" rows="2" placeholder="Vul hier tekst in..." oninput="update()"></textarea>
         </div>
         <div class="form-group">
             <label>Foto Uit De Oude Doos:</label>
-            <input type="file" accept="image/*" onchange="previewImage(this, 'imgOudeDoos')">
+            <input type="file" accept="image/*" multiple onchange="previewImages(this, 'containerOudeDoos')">
         </div>
         <div class="form-group">
-            <label>Goede afspraken:</label>
-            <textarea id="inAfspraken" rows="2" placeholder="Vul hier afspraken in..." oninput="update()"></textarea>
+            <label>Agenda van de maand:</label>
+            <textarea id="inAgenda" rows="3" placeholder="Vul hier agenda-items in..." oninput="update()"></textarea>
         </div>
         <div class="form-group">
             <label>Redactie Contact:</label>
@@ -350,35 +446,35 @@ Spreek mekaar erop aan, zowel bewoners als personeel.</textarea>
         <!-- PAGE 1 -->
         <div class="page">
             <div class="header-box">
-                <h1>NOCHH NIEUWS</h1>
-                <p>Samen op de hoogte, samen vooruit.</p>
+                <h1 id="outBannerTitle">NOCHH NIEUWS</h1>
+                <p id="outBannerSub">Samen op de hoogte, samen vooruit.</p>
             </div>
             <div class="meta-bar" id="outMeta1">UITGAVE NR 1  |  AUGUSTUS 2026</div>
 
-            <div class="img-container header-img" style="margin-bottom: 12px;">
+            <div class="img-container header-img" id="containerMain" style="margin-bottom: 8px;">
                 <span>[ HOOFDAFBEELDING / CENTRUM ]</span>
-                <img id="imgMain" alt="Main Header Image">
             </div>
 
             <div class="grid-2">
-                <div class="box">
+                <div class="box feest-box">
                     <div class="box-title">FEEST</div>
                     <div class="box-content" id="outFeest">---</div>
                 </div>
-                <div class="box">
+                <div class="box wist-je-dat-box">
                     <div class="box-title">WIST JE DAT?</div>
                     <div class="box-content" id="outWistJeDat">---</div>
                 </div>
             </div>
 
             <div class="box">
-                <div class="box-title">NIEUWS: <span id="outNieuwsTitle">---</span></div>
+                <div class="box-title" id="outNieuwsTitle">NIEUWS</div>
+                <div class="box-content" id="outNieuwsSub" style="font-weight: bold; margin-bottom: 4px;"></div>
                 <div class="box-content" id="outNieuws">---</div>
             </div>
 
             <div class="box" style="border-left: 4px solid #d32f2f;">
                 <div class="box-title">DE ANECDOTE</div>
-                <div class="box-content" id="outAnecdote">---</div>
+                <div class="box-content anecdote-text" id="outAnecdote">---</div>
             </div>
         </div>
 
@@ -386,40 +482,43 @@ Spreek mekaar erop aan, zowel bewoners als personeel.</textarea>
         <div class="page">
             <div class="meta-bar" id="outMeta2">UITGAVE NR 1  |  AUGUSTUS 2026</div>
 
-            <div class="grid-2">
+            <!-- SECTION 1: ACTIVITEIT IN DE KIJKER -->
+            <div class="grid-page2-standard">
                 <div class="box">
                     <div class="box-title">ACTIVITEIT IN DE KIJKER</div>
+                    <div class="box-content" id="outActTitle" style="font-weight: bold; margin-bottom: 2px;"></div>
                     <div class="box-content" id="outAct">---</div>
                 </div>
-                <div class="box">
-                    <div class="box-title">FOTO VAN ACTIVITEIT</div>
-                    <div class="img-container">
+                <div class="box" style="background: transparent; border: none; padding: 0;">
+                    <div class="img-container" id="containerAct">
                         <span>[ FOTO VAN ACTIVITEIT ]</span>
-                        <img id="imgAct" alt="Activity Photo">
                     </div>
                 </div>
             </div>
 
-            <div class="box" style="border-left: 4px solid #d32f2f;">
-                <div class="box-title">DINGETJE VAN DE MAAND</div>
-                <div class="box-content" id="outDingetje">---</div>
-                <div class="box-content" id="outAuthors" style="font-weight: bold; margin-top: 4px; color: #555;">---</div>
-                <div class="img-container" style="max-height: 120px; margin-top: 8px;">
-                    <span>[ BANNER DINGETJE VAN DE MAAND ]</span>
-                    <img id="imgDingetjeBanner" alt="Dingetje Banner">
+            <!-- SECTION 2: DINGETJE VAN DE MAAND (TALLER PHOTO SLOT) -->
+            <div class="grid-page2-custom-photo">
+                <div class="box" style="border-left: 4px solid #d32f2f;">
+                    <div class="box-title">DINGETJE VAN DE MAAND</div>
+                    <div class="box-content" id="outDingetje">---</div>
+                    <div class="box-content" id="outAuthors" style="font-weight: bold; margin-top: 4px; color: #555;"></div>
+                </div>
+                <div class="box" style="background: transparent; border: none; padding: 0;">
+                    <div class="img-container" id="containerDingetjePhoto">
+                        <span>[ FOTO DINGETJE ]</span>
+                    </div>
                 </div>
             </div>
 
-            <div class="grid-2">
+            <!-- SECTION 3: MENS ACHTER DE BADGE -->
+            <div class="grid-page2-standard">
                 <div class="box">
                     <div class="box-title">MENS ACHTER DE BADGE</div>
                     <div class="box-content" id="outBadge">---</div>
                 </div>
-                <div class="box">
-                    <div class="box-title">FOTO MEDEWERKER</div>
-                    <div class="img-container">
+                <div class="box" style="background: transparent; border: none; padding: 0;">
+                    <div class="img-container" id="containerBadge">
                         <span>[ FOTO MEDEWERKER ]</span>
-                        <img id="imgBadge" alt="Badge Photo">
                     </div>
                 </div>
             </div>
@@ -429,40 +528,42 @@ Spreek mekaar erop aan, zowel bewoners als personeel.</textarea>
         <div class="page">
             <div class="meta-bar" id="outMeta3">UITGAVE NR 1  |  AUGUSTUS 2026</div>
 
-            <div class="box">
-                <div class="box-title">AGENDA VAN DE MAAND</div>
-                <div class="box-content" id="outAgenda">---</div>
-            </div>
-
-            <div class="box">
-                <div class="box-title">GRONDBEGINSEL / KERNWAARDE VAN HET RODE KRUIS</div>
-                <div class="box-content" id="outRodeKruis">---</div>
-            </div>
-
-            <div class="grid-2">
-                <div class="box">
-                    <div class="box-title">UIT DE OUDE DOOS</div>
-                    <div class="box-content" id="outOudeDoos">---</div>
-                </div>
-                <div class="box">
-                    <div class="box-title">FOTO UIT DE OUDE DOOS</div>
-                    <div class="img-container">
-                        <span>[ FOTO UIT DE OUDE DOOS ]</span>
-                        <img id="imgOudeDoos" alt="Old Photo">
-                    </div>
-                </div>
-            </div>
-
+            <!-- 1. GOEDE AFSPRAKEN, GOEDE VRIENDEN -->
             <div class="box">
                 <div class="box-title">GOEDE AFSPRAKEN, GOEDE VRIENDEN</div>
                 <div class="box-content" id="outAfspraken">---</div>
             </div>
 
-            <div class="box" style="background-color: #f0f4f8;">
+            <!-- 2. GRONDBEGINSEL / KERNWAARDE VAN HET RODE KRUIS -->
+            <div class="box">
+                <div class="box-title">GRONDBEGINSEL / KERNWAARDE VAN HET RODE KRUIS</div>
+                <div class="box-content" id="outRodeKruis">---</div>
+            </div>
+
+            <!-- 3. UIT DE OUDE DOOS -->
+            <div class="grid-2">
+                <div class="box">
+                    <div class="box-title">UIT DE OUDE DOOS</div>
+                    <div class="box-content" id="outOudeDoos">---</div>
+                </div>
+                <div class="box" style="background: transparent; border: none; padding: 0; margin-bottom: 8px;">
+                    <div class="img-container" id="containerOudeDoos">
+                        <span>[ FOTO UIT DE OUDE DOOS ]</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 4. AGENDA VAN DE MAAND -->
+            <div class="box">
+                <div class="box-title">AGENDA VAN DE MAAND</div>
+                <div class="box-content" id="outAgenda">---</div>
+            </div>
+
+            <!-- 5. VRAGEN, SUGGESTIES, OPMERKINGEN? -->
+            <div class="box contact-box">
                 <div class="box-title">VRAGEN, SUGGESTIES, OPMERKINGEN?</div>
                 <div class="box-content">
-                    Contacteer het redactie team: <b id="outContact">---</b><br>
-                    <i>Of laat een berichtje achter in de suggestie box in het teamlokaal.</i>
+                    Contacteer het redactie team: <b id="outContact">---</b> | <i>Of laat een berichtje achter in de suggestie box in het teamlokaal.</i>
                 </div>
             </div>
         </div>
@@ -472,19 +573,26 @@ Spreek mekaar erop aan, zowel bewoners als personeel.</textarea>
     <!-- JavaScript Functions -->
     <script>
         function update() {
+            document.getElementById('outBannerTitle').innerText = document.getElementById('inBannerTitle').value || 'NOCHH NIEUWS';
+            document.getElementById('outBannerSub').innerText = document.getElementById('inBannerSub').value || '';
+
             document.getElementById('outMeta1').innerText = document.getElementById('inMeta1').value || '---';
             document.getElementById('outMeta2').innerText = document.getElementById('inMeta2').value || '---';
             document.getElementById('outMeta3').innerText = document.getElementById('inMeta3').value || '---';
 
             document.getElementById('outFeest').innerText = document.getElementById('inFeest').value || '---';
             document.getElementById('outWistJeDat').innerText = document.getElementById('inWistJeDat').value || '---';
-            document.getElementById('outNieuwsTitle').innerText = document.getElementById('inNieuwsTitle').value || '---';
+            
+            document.getElementById('outNieuwsTitle').innerText = document.getElementById('inNieuwsTitle').value || 'NIEUWS';
+            document.getElementById('outNieuwsSub').innerText = document.getElementById('inNieuwsSub').value || '';
             document.getElementById('outNieuws').innerText = document.getElementById('inNieuws').value || '---';
+            
             document.getElementById('outAnecdote').innerText = document.getElementById('inAnecdote').value || '---';
 
+            document.getElementById('outActTitle').innerText = document.getElementById('inActTitle').value || '';
             document.getElementById('outAct').innerText = document.getElementById('inAct').value || '---';
             document.getElementById('outDingetje').innerText = document.getElementById('inDingetje').value || '---';
-            document.getElementById('outAuthors').innerText = document.getElementById('inAuthors').value || '---';
+            document.getElementById('outAuthors').innerText = document.getElementById('inAuthors').value || '';
             document.getElementById('outBadge').innerText = document.getElementById('inBadge').value || '---';
 
             document.getElementById('outAgenda').innerText = document.getElementById('inAgenda').value || '---';
@@ -494,22 +602,28 @@ Spreek mekaar erop aan, zowel bewoners als personeel.</textarea>
             document.getElementById('outContact').innerText = document.getElementById('inContact').value || '---';
         }
 
-        function previewImage(input, imgElementId) {
-            const file = input.files[0];
-            const imgElement = document.getElementById(imgElementId);
-            const placeholder = imgElement.previousElementSibling;
-            const container = imgElement.parentElement;
+        function previewImages(input, containerId) {
+            const files = input.files;
+            const container = document.getElementById(containerId);
+            container.innerHTML = ''; 
 
-            if (file) {
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    imgElement.src = e.target.result;
-                    imgElement.style.display = 'block';
-                    container.style.backgroundColor = 'transparent';
-                    container.style.border = 'none';
-                    if (placeholder) placeholder.style.display = 'none';
-                }
-                reader.readAsDataURL(file);
+            if (files && files.length > 0) {
+                container.style.backgroundColor = 'transparent';
+                container.style.border = 'none';
+
+                Array.from(files).forEach(file => {
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        const img = document.createElement('img');
+                        img.src = e.target.result;
+                        container.appendChild(img);
+                    }
+                    reader.readAsDataURL(file);
+                });
+            } else {
+                container.innerHTML = '<span>[ AFBEELDING ]</span>';
+                container.style.backgroundColor = '#f0f0f0';
+                container.style.border = '1px dashed #999';
             }
         }
 
