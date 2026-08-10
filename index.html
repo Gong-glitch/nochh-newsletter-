@@ -259,11 +259,14 @@
             line-height: 1.45;
         }
 
-        /* Base Image Containers */
+        /* BASE IMAGE CONTAINER WITH BACKGROUND FIT (NO CANVAS STRETCHING) */
         .img-container {
             width: 100%;
             height: 160px;
             background-color: #f0f0f0;
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -273,25 +276,14 @@
             overflow: hidden;
             border-radius: 4px;
             padding: 0;
-            position: relative;
         }
 
-        /* FIXED HEIGHT FOR MAIN HEADER IMAGE CONTAINER */
+        /* MAIN HEADER IMAGE SLOT WITH DEFAULT IMAGE */
         .img-container.header-img {
             height: 240px !important;
             border: none;
-            background-color: transparent;
+            background-image: url('rode kruis.jpg');
             margin-bottom: 8px;
-        }
-
-        /* STRETCH-FREE IMAGE FIT */
-        .img-container img {
-            width: 100% !important;
-            height: 100% !important;
-            object-fit: cover !important;
-            object-position: center !important;
-            border-radius: 4px;
-            display: block;
         }
 
         /* INDEPENDENT TWO-PHOTO SECTION UNDER FEEST/WIST JE DAT */
@@ -387,8 +379,8 @@
         <div class="form-group">
             <label>Hoofdafbeelding(en):</label>
             <div class="file-input-group">
-                <input type="file" id="inputMain" accept="image/*" multiple onchange="previewImages(this, 'containerMain')">
-                <button class="file-delete-btn" onclick="clearFileInput('inputMain', 'containerMain')" title="Wis gekozen bestand">&times;</button>
+                <input type="file" id="inputMain" accept="image/*" onchange="previewImages(this, 'containerMain')">
+                <button class="file-delete-btn" onclick="clearFileInput('inputMain', 'containerMain', true)" title="Wis gekozen bestand">&times;</button>
             </div>
         </div>
         <div class="form-group">
@@ -447,7 +439,7 @@
         <div class="form-group">
             <label>Foto Activiteit:</label>
             <div class="file-input-group">
-                <input type="file" id="inputAct" accept="image/*" multiple onchange="previewImages(this, 'containerAct')">
+                <input type="file" id="inputAct" accept="image/*" onchange="previewImages(this, 'containerAct')">
                 <button class="file-delete-btn" onclick="clearFileInput('inputAct', 'containerAct')" title="Wis gekozen bestand">&times;</button>
             </div>
         </div>
@@ -459,7 +451,7 @@
         <div class="form-group">
             <label>Foto Dingetje van de maand (Hoge foto):</label>
             <div class="file-input-group">
-                <input type="file" id="inputDingetje" accept="image/*" multiple onchange="previewImages(this, 'containerDingetjePhoto')">
+                <input type="file" id="inputDingetje" accept="image/*" onchange="previewImages(this, 'containerDingetjePhoto')">
                 <button class="file-delete-btn" onclick="clearFileInput('inputDingetje', 'containerDingetjePhoto')" title="Wis gekozen bestand">&times;</button>
             </div>
         </div>
@@ -470,7 +462,7 @@
         <div class="form-group">
             <label>Foto Medewerker:</label>
             <div class="file-input-group">
-                <input type="file" id="inputBadge" accept="image/*" multiple onchange="previewImages(this, 'containerBadge')">
+                <input type="file" id="inputBadge" accept="image/*" onchange="previewImages(this, 'containerBadge')">
                 <button class="file-delete-btn" onclick="clearFileInput('inputBadge', 'containerBadge')" title="Wis gekozen bestand">&times;</button>
             </div>
         </div>
@@ -496,7 +488,7 @@
         <div class="form-group">
             <label>Foto Uit De Oude Doos:</label>
             <div class="file-input-group">
-                <input type="file" id="inputOudeDoos" accept="image/*" multiple onchange="previewImages(this, 'containerOudeDoos')">
+                <input type="file" id="inputOudeDoos" accept="image/*" onchange="previewImages(this, 'containerOudeDoos')">
                 <button class="file-delete-btn" onclick="clearFileInput('inputOudeDoos', 'containerOudeDoos')" title="Wis gekozen bestand">&times;</button>
             </div>
         </div>
@@ -526,9 +518,7 @@
             </div>
             <div class="meta-bar" id="outMeta1">UITGAVE NR 1  |  AUGUSTUS 2026</div>
 
-            <div class="img-container header-img" id="containerMain">
-                <img src="rode kruis.jpg" alt="Rode Kruis Centrum" id="mainHeaderImage">
-            </div>
+            <div class="img-container header-img" id="containerMain"></div>
 
             <!-- FEEST & WIST JE DAT BOXES -->
             <div class="grid-2">
@@ -658,7 +648,6 @@
 
     <!-- JavaScript Functions -->
     <script>
-        // PAGE SIZE CONFIGURATION
         const pageDimensions = {
             a4: { width: '210mm', height: '297mm', pdfWidth: 210, pdfHeight: 297, name: 'a4' },
             letter: { width: '215.9mm', height: '279.4mm', pdfWidth: 215.9, pdfHeight: 279.4, name: 'letter' },
@@ -709,35 +698,36 @@
         function previewImages(input, containerId) {
             const files = input.files;
             const container = document.getElementById(containerId);
-            container.innerHTML = ''; 
 
             if (files && files.length > 0) {
-                container.style.backgroundColor = 'transparent';
-                container.style.border = 'none';
-
-                Array.from(files).forEach(file => {
-                    const reader = new FileReader();
-                    reader.onload = function(e) {
-                        const img = document.createElement('img');
-                        img.src = e.target.result;
-                        container.appendChild(img);
-                    }
-                    reader.readAsDataURL(file);
-                });
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    container.style.backgroundImage = `url('${e.target.result}')`;
+                    container.style.border = 'none';
+                    container.innerHTML = ''; // Hide placeholder text
+                }
+                reader.readAsDataURL(files[0]);
             } else {
                 clearFileInput(input.id, containerId);
             }
         }
 
-        function clearFileInput(inputId, containerId) {
+        function clearFileInput(inputId, containerId, isMainHeader = false) {
             const input = document.getElementById(inputId);
             if (input) input.value = '';
 
             const container = document.getElementById(containerId);
             if (container) {
-                container.innerHTML = '<span>[ AFBEELDING ]</span>';
-                container.style.backgroundColor = '#f0f0f0';
-                container.style.border = '1px dashed #999';
+                if (isMainHeader) {
+                    container.style.backgroundImage = "url('rode kruis.jpg')";
+                    container.style.border = 'none';
+                    container.innerHTML = '';
+                } else {
+                    container.style.backgroundImage = 'none';
+                    container.style.backgroundColor = '#f0f0f0';
+                    container.style.border = '1px dashed #999';
+                    container.innerHTML = '<span>[ AFBEELDING ]</span>';
+                }
             }
         }
 
@@ -765,11 +755,7 @@
                         scale: 2,
                         useCORS: true,
                         allowTaint: true,
-                        logging: false,
-                        width: page.offsetWidth,
-                        height: page.offsetHeight,
-                        windowWidth: page.offsetWidth,
-                        windowHeight: page.offsetHeight
+                        logging: false
                     });
 
                     page.style.boxShadow = origBoxShadow;
@@ -787,7 +773,7 @@
 
                 pdf.save(`NOCHH_Nieuws_${selectedFormat.toUpperCase()}.pdf`);
             } catch (error) {
-                console.error("PDF Export error:", error);
+                console.error("PDF Generation error:", error);
                 alert("Er is een fout opgetreden bij het genereren van de PDF.");
             }
         }
