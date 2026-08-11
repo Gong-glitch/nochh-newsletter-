@@ -200,7 +200,7 @@
         /* Page Dimensions */
         .page {
             width: 210mm;
-            height: 297mm;
+            min-height: 297mm;
             background: #fff;
             padding: 12mm 15mm 10mm 15mm;
             margin: 0 auto 25px auto;
@@ -268,14 +268,6 @@
             padding: 8px 12px;
             margin-bottom: 8px;
             background: #fafafa;
-            overflow: hidden;
-        }
-
-        .box.news-box {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            min-height: 0;
         }
 
         .box.wist-je-dat-box {
@@ -293,11 +285,12 @@
             border-color: #fff59d;
         }
 
-        /* PAGE 3: LIGHT RED BACKGROUND & CENTERED TEXT FOR GRONDBEGINSEL */
+        /* LIGHT RED BACKGROUND & CENTERED TEXT FOR GRONDBEGINSEL */
         .box.rode-kruis-box {
             background-color: #f9ecee;
             border-color: #e2b6bc;
             text-align: center;
+            margin-top: 4px;
         }
 
         .box-title {
@@ -306,7 +299,6 @@
             color: #d32f2f;
             text-transform: uppercase;
             margin-bottom: 4px;
-            flex-shrink: 0;
         }
 
         .box-content {
@@ -314,20 +306,14 @@
             line-height: 1.4;
             white-space: pre-wrap;
             word-break: break-word;
-            overflow-y: hidden;
-        }
-
-        .box.news-box .box-content.news-text {
-            flex: 1;
-            overflow-y: hidden;
         }
 
         .box-content.anecdote-text {
             font-size: 12.5px;
-            line-height: 1.3;
+            line-height: 1.35;
         }
 
-        /* STRICT IMAGE CONTAINER SIZING - NO SHRINKING */
+        /* IMAGE CONTAINERS */
         .img-container {
             width: 100%;
             height: 150px;
@@ -345,7 +331,7 @@
             flex-shrink: 0 !important;
         }
 
-        /* RIGID SIZING FOR MAIN HEADER PICTURE */
+        /* HEADER IMAGE */
         .img-container.header-img {
             width: 100% !important;
             height: 180px !important;
@@ -411,8 +397,9 @@
             flex-shrink: 0 !important;
         }
 
+        /* ENLARGED DINGETJE PHOTO TO FIT FULL PORTRAIT IMAGES */
         #containerDingetjePhoto {
-            height: 230px !important;
+            height: 340px !important;
             flex-shrink: 0 !important;
         }
 
@@ -441,7 +428,7 @@
             font-size: 11.5px;
             line-height: 1.35;
             text-align: center;
-            white-space: normal; /* Prevents HTML indentation spaces from messing up centering */
+            white-space: normal;
         }
 
         /* CROPPER MODAL STYLING */
@@ -592,10 +579,10 @@
         </div>
         <div class="form-group">
             <div class="toggle-group">
-                <label>De Anecdote:</label>
+                <label>Personeelsverschuiving:</label>
                 <label class="toggle-switch-label"><input type="checkbox" id="toggleAnecdote" checked onchange="update()"> Tone / Toon</label>
             </div>
-            <textarea id="inAnecdote" rows="3" placeholder="Vul hier de anecdote in..." oninput="update()"></textarea>
+            <textarea id="inAnecdote" rows="3" placeholder="Vul hier personeelsverschuiving in..." oninput="update()"></textarea>
         </div>
 
         <!-- PAGINA 2 -->
@@ -657,6 +644,13 @@
                 <button class="file-delete-btn" onclick="clearFileInput('inputBadge', 'containerBadge')" title="Wis gekozen bestand">&times;</button>
             </div>
         </div>
+        <div class="form-group">
+            <div class="toggle-group">
+                <label>Grondbeginsel Rode Kruis:</label>
+                <label class="toggle-switch-label"><input type="checkbox" id="toggleRodeKruis" checked onchange="update()"> Tone / Toon</label>
+            </div>
+            <textarea id="inRodeKruis" rows="3" placeholder="Vul hier de kernwaarde in..." oninput="update()"></textarea>
+        </div>
 
         <!-- PAGINA 3 -->
         <div class="section-title">PAGINA 3</div>
@@ -670,13 +664,6 @@
                 <label class="toggle-switch-label"><input type="checkbox" id="toggleAfspraken" checked onchange="update()"> Tone / Toon</label>
             </div>
             <textarea id="inAfspraken" rows="3" placeholder="Vul hier afspraken in..." oninput="update()"></textarea>
-        </div>
-        <div class="form-group">
-            <div class="toggle-group">
-                <label>Grondbeginsel Rode Kruis:</label>
-                <label class="toggle-switch-label"><input type="checkbox" id="toggleRodeKruis" checked onchange="update()"> Tone / Toon</label>
-            </div>
-            <textarea id="inRodeKruis" rows="3" placeholder="Vul hier de kernwaarde in..." oninput="update()"></textarea>
         </div>
         <div class="form-group">
             <div class="toggle-group">
@@ -757,9 +744,9 @@
                 <div class="box-content news-text" id="outNieuws">---</div>
             </div>
 
-            <!-- TOGGLEABLE DE ANECDOTE BOX -->
+            <!-- RENAMED TO PERSONEELSVERSCHUIVING -->
             <div class="box" id="anecdoteBox" style="border-left: 4px solid #d32f2f; flex-shrink: 0;">
-                <div class="box-title">DE ANECDOTE</div>
+                <div class="box-title">PERSONEELSVERSCHUIVING</div>
                 <div class="box-content anecdote-text" id="outAnecdote">---</div>
             </div>
         </div>
@@ -808,6 +795,12 @@
                     <div class="box-content" id="outBadge">---</div>
                 </div>
             </div>
+
+            <!-- MOVED FROM PAGE 3: GRONDBEGINSEL / KERNWAARDE VAN HET RODE KRUIS -->
+            <div class="box rode-kruis-box" id="rodeKruisBox">
+                <div class="box-title">GRONDBEGINSEL / KERNWAARDE VAN HET RODE KRUIS</div>
+                <div class="box-content" id="outRodeKruis">---</div>
+            </div>
         </div>
 
         <!-- PAGE 3 -->
@@ -820,13 +813,7 @@
                 <div class="box-content" id="outAfspraken">---</div>
             </div>
 
-            <!-- 2. GRONDBEGINSEL / KERNWAARDE VAN HET RODE KRUIS -->
-            <div class="box rode-kruis-box" id="rodeKruisBox">
-                <div class="box-title">GRONDBEGINSEL / KERNWAARDE VAN HET RODE KRUIS</div>
-                <div class="box-content" id="outRodeKruis">---</div>
-            </div>
-
-            <!-- 3. UIT DE OUDE DOOS -->
+            <!-- 2. UIT DE OUDE DOOS -->
             <div class="grid-2" id="gridOudeDoos">
                 <div class="box" id="oudeDoosTextBox">
                     <div class="box-title">UIT DE OUDE DOOS</div>
@@ -839,13 +826,13 @@
                 </div>
             </div>
 
-            <!-- 4. AGENDA VAN DE MAAND -->
+            <!-- 3. AGENDA VAN DE MAAND -->
             <div class="box" id="agendaBox">
                 <div class="box-title">AGENDA VAN DE MAAND</div>
                 <div class="box-content" id="outAgenda">---</div>
             </div>
 
-            <!-- 5. VRAGEN, SUGGESTIES, OPMERKINGEN? -->
+            <!-- 4. VRAGEN, SUGGESTIES, OPMERKINGEN? -->
             <div class="box contact-box" id="contactBox">
                 <div class="box-title">VRAGEN, SUGGESTIES, OPMERKINGEN?</div>
                 <div class="box-content">
@@ -890,7 +877,7 @@
 
             pages.forEach(page => {
                 page.style.width = config.width;
-                page.style.height = config.height;
+                page.style.minHeight = config.height;
             });
         }
 
@@ -974,12 +961,12 @@
             updateGridState('gridBadge', showBadgeImg, showBadgeText);
             document.getElementById('outBadge').innerText = document.getElementById('inBadge').value || '---';
 
+            setVisibility('rodeKruisBox', document.getElementById('toggleRodeKruis').checked);
+            document.getElementById('outRodeKruis').innerText = document.getElementById('inRodeKruis').value || '---';
+
             // PAGE 3 TOGGLES
             setVisibility('afsprakenBox', document.getElementById('toggleAfspraken').checked);
             document.getElementById('outAfspraken').innerText = document.getElementById('inAfspraken').value || '---';
-
-            setVisibility('rodeKruisBox', document.getElementById('toggleRodeKruis').checked);
-            document.getElementById('outRodeKruis').innerText = document.getElementById('inRodeKruis').value || '---';
 
             const showOudeText = document.getElementById('toggleOudeDoosText').checked;
             const showOudeImg = document.getElementById('toggleOudeDoosImg').checked;
