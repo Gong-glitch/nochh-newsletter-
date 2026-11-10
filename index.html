@@ -308,9 +308,10 @@
             word-break: break-word;
         }
 
+        /* PERSONEELSVERSCHUIVING: now same size as the other text boxes */
         .box-content.anecdote-text {
-            font-size: 12.5px;
-            line-height: 1.35;
+            font-size: 11px;
+            line-height: 1.4;
         }
 
         /* IMAGE CONTAINERS */
@@ -591,6 +592,15 @@
             <label>Pagina 2 Header Text:</label>
             <input type="text" id="inMeta2" value="UITGAVE NR 1  |  AUGUSTUS 2026" oninput="update()">
         </div>
+        <!-- NEW: DUURZAAM SAMEN -->
+        <div class="form-group">
+            <div class="toggle-group">
+                <label>Duurzaam Samen:</label>
+                <label class="toggle-switch-label"><input type="checkbox" id="toggleDuurzaam" checked onchange="update()"> Tone / Toon</label>
+            </div>
+            <input type="text" id="inDuurzaamTitle" value="Duurzaam Samen" oninput="update()" style="margin-bottom: 4px;">
+            <textarea id="inDuurzaam" rows="4" placeholder="Vul hier de tekst van het artikel in..." oninput="update()"></textarea>
+        </div>
         <div class="form-group">
             <div class="toggle-group">
                 <label>Activiteit in de kijker (Tekst):</label>
@@ -644,19 +654,20 @@
                 <button class="file-delete-btn" onclick="clearFileInput('inputBadge', 'containerBadge')" title="Wis gekozen bestand">&times;</button>
             </div>
         </div>
-        <div class="form-group">
-            <div class="toggle-group">
-                <label>Grondbeginsel Rode Kruis:</label>
-                <label class="toggle-switch-label"><input type="checkbox" id="toggleRodeKruis" checked onchange="update()"> Tone / Toon</label>
-            </div>
-            <textarea id="inRodeKruis" rows="3" placeholder="Vul hier de kernwaarde in..." oninput="update()"></textarea>
-        </div>
 
         <!-- PAGINA 3 -->
         <div class="section-title">PAGINA 3</div>
         <div class="form-group">
             <label>Pagina 3 Header Text:</label>
             <input type="text" id="inMeta3" value="UITGAVE NR 1  |  AUGUSTUS 2026" oninput="update()">
+        </div>
+        <!-- MOVED FROM PAGE 2 -->
+        <div class="form-group">
+            <div class="toggle-group">
+                <label>Grondbeginsel Rode Kruis:</label>
+                <label class="toggle-switch-label"><input type="checkbox" id="toggleRodeKruis" checked onchange="update()"> Tone / Toon</label>
+            </div>
+            <textarea id="inRodeKruis" rows="3" placeholder="Vul hier de kernwaarde in..." oninput="update()"></textarea>
         </div>
         <div class="form-group">
             <div class="toggle-group">
@@ -744,7 +755,7 @@
                 <div class="box-content news-text" id="outNieuws">---</div>
             </div>
 
-            <!-- RENAMED TO PERSONEELSVERSCHUIVING -->
+            <!-- PERSONEELSVERSCHUIVING (font size now aligned with other boxes) -->
             <div class="box" id="anecdoteBox" style="border-left: 4px solid #d32f2f; flex-shrink: 0;">
                 <div class="box-title">PERSONEELSVERSCHUIVING</div>
                 <div class="box-content anecdote-text" id="outAnecdote">---</div>
@@ -754,6 +765,12 @@
         <!-- PAGE 2 -->
         <div class="page">
             <div class="meta-bar" id="outMeta2">UITGAVE NR 1  |  AUGUSTUS 2026</div>
+
+            <!-- NEW SECTION: DUURZAAM SAMEN (text only, top of page 2) -->
+            <div class="box" id="duurzaamBox" style="border-left: 4px solid #d32f2f; flex-shrink: 0;">
+                <div class="box-title" id="outDuurzaamTitle">DUURZAAM SAMEN</div>
+                <div class="box-content" id="outDuurzaam">---</div>
+            </div>
 
             <!-- SECTION 1: ACTIVITEIT IN DE KIJKER -->
             <div class="grid-page2-standard" id="gridAct">
@@ -795,17 +812,17 @@
                     <div class="box-content" id="outBadge">---</div>
                 </div>
             </div>
-
-            <!-- MOVED FROM PAGE 3: GRONDBEGINSEL / KERNWAARDE VAN HET RODE KRUIS -->
-            <div class="box rode-kruis-box" id="rodeKruisBox">
-                <div class="box-title">GRONDBEGINSEL / KERNWAARDE VAN HET RODE KRUIS</div>
-                <div class="box-content" id="outRodeKruis">---</div>
-            </div>
         </div>
 
         <!-- PAGE 3 -->
         <div class="page">
             <div class="meta-bar" id="outMeta3">UITGAVE NR 1  |  AUGUSTUS 2026</div>
+
+            <!-- MOVED FROM PAGE 2: GRONDBEGINSEL / KERNWAARDE VAN HET RODE KRUIS (now top of page 3) -->
+            <div class="box rode-kruis-box" id="rodeKruisBox">
+                <div class="box-title">GRONDBEGINSEL / KERNWAARDE VAN HET RODE KRUIS</div>
+                <div class="box-content" id="outRodeKruis">---</div>
+            </div>
 
             <!-- 1. GOEDE AFSPRAKEN, GOEDE VRIENDEN -->
             <div class="box" id="afsprakenBox">
@@ -938,6 +955,10 @@
             document.getElementById('outAnecdote').innerText = document.getElementById('inAnecdote').value || '---';
 
             // PAGE 2 TOGGLES
+            setVisibility('duurzaamBox', document.getElementById('toggleDuurzaam').checked);
+            document.getElementById('outDuurzaamTitle').innerText = document.getElementById('inDuurzaamTitle').value || 'DUURZAAM SAMEN';
+            document.getElementById('outDuurzaam').innerText = document.getElementById('inDuurzaam').value || '---';
+
             const showActText = document.getElementById('toggleActText').checked;
             const showActImg = document.getElementById('toggleActImg').checked;
             setVisibility('actTextBox', showActText);
@@ -961,10 +982,10 @@
             updateGridState('gridBadge', showBadgeImg, showBadgeText);
             document.getElementById('outBadge').innerText = document.getElementById('inBadge').value || '---';
 
+            // PAGE 3 TOGGLES
             setVisibility('rodeKruisBox', document.getElementById('toggleRodeKruis').checked);
             document.getElementById('outRodeKruis').innerText = document.getElementById('inRodeKruis').value || '---';
 
-            // PAGE 3 TOGGLES
             setVisibility('afsprakenBox', document.getElementById('toggleAfspraken').checked);
             document.getElementById('outAfspraken').innerText = document.getElementById('inAfspraken').value || '---';
 
